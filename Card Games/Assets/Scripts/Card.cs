@@ -4,24 +4,21 @@ using System.Collections;
 
 public class Card : NetworkBehaviour {
 
-	static private Player local_player = null;
+	static private Player s_local_player = null;
 
-	public Sprite front;
-	public Vector3 blowup_size;
+	public string m_name;
+	public Sprite m_front;
+	public Vector3 m_blowup_size;
 
-	private Sprite back;
+	private Sprite m_back;
 	[SyncVar]
-	private float x;
+	private bool m_held;
 	[SyncVar]
-	private float y;
-	[SyncVar]
-	private bool held;
-	private bool holder;
-	[SyncVar]
-	private bool upright;
-	private bool blownup;
-	private SpriteRenderer sprite_component;
-	private Vector3 normal_size;
+	private bool m_upright;
+	private bool m_holder;
+	private bool m_blownup;
+	private SpriteRenderer m_sprite_component;
+	private Vector3 m_normal_size;
 
 	public delegate void NoArgDelegate ();
 	[SyncEvent]
@@ -29,20 +26,20 @@ public class Card : NetworkBehaviour {
 
 	void Start () {
 		EventFlip = new NoArgDelegate(FlipEvent);
-		normal_size = new Vector3 (1, 1, 1);
-		blowup_size = new Vector3 (3, 3, 1);
-		back = Resources.Load<Sprite> ("Card_Back");
-		upright = false;
-		blownup = false;
-		sprite_component = this.GetComponent<SpriteRenderer> ();
-		sprite_component.sprite = back;
+		m_normal_size = new Vector3 (1, 1, 1);
+		m_blowup_size = new Vector3 (3, 3, 1);
+		m_back = Resources.Load<Sprite> ("Card_Back");
+		m_upright = false;
+		m_blownup = false;
+		m_sprite_component = this.GetComponent<SpriteRenderer> ();
+		m_sprite_component.sprite = m_back;
 	}
 
 	void OnConnectedToServer () {
-		if (upright) {
-			sprite_component.sprite = front;
+		if (m_upright) {
+			m_sprite_component.sprite = m_front;
 		} else {
-			sprite_component.sprite = back;
+			m_sprite_component.sprite = m_back;
 		}
 	}
 
@@ -50,7 +47,7 @@ public class Card : NetworkBehaviour {
 		Player[] players = FindObjectsOfType<Player> ();
 		foreach (Player player in players) {
 			if (player.isLocalPlayer) {
-				local_player = player;
+				s_local_player = player;
 			}
 		}
 	}
@@ -58,29 +55,29 @@ public class Card : NetworkBehaviour {
 	// Hotkeys
 
 	void OnMouseOver () {
-		if (upright && Input.GetKeyDown("s")) {
+		if (m_upright && Input.GetKeyDown("s")) {
 			ChangeSize ();
 		}
 
 		if (Input.GetKeyDown("f")) {
-			local_player.CmdFlip (this.gameObject);
+			s_local_player.CmdFlip (this.gameObject);
 		}
 	}
 
 	// Card Zoom
 
 	private void Blowup () {
-		transform.localScale = blowup_size;
-		blownup = true;
+		transform.localScale = m_blowup_size;
+		m_blownup = true;
 	}
 
 	private void Shrink () {
-		transform.localScale = normal_size;
-		blownup = false;
+		transform.localScale = m_normal_size;
+		m_blownup = false;
 	}
 
 	private void ChangeSize () {
-		if (blownup) {
+		if (m_blownup) {
 			Shrink ();
 		} else {
 			Blowup ();
@@ -90,18 +87,18 @@ public class Card : NetworkBehaviour {
 	// Card Flipping
 
 	public void FlipUp () {
-		upright = true;
-		sprite_component.sprite = front;
+		m_upright = true;
+		m_sprite_component.sprite = m_front;
 	}
 
 	public void FlipDown () {
-		upright = false;
-		sprite_component.sprite = back;
+		m_upright = false;
+		m_sprite_component.sprite = m_back;
 		Shrink ();
 	}
 
 	public void FlipEvent () {
-		if (upright) {
+		if (m_upright) {
 			FlipDown ();
 		} else {
 			FlipUp ();
@@ -115,28 +112,28 @@ public class Card : NetworkBehaviour {
 	// Dragging & Dropping
 
 	public void SetHeld (bool val) {
-		held = val;
+		m_held = val;
 	}
 
 	void OnMouseDown () {
 		Debug.Log ("down");
-		if (!held) {
-			local_player.CmdGrab (this.gameObject);
-			holder = true;
+		if (!m_held) {
+			s_local_player.CmdGrab (this.gameObject);
+			m_holder = true;
 		}
 	}
 
 	void OnMouseUp () {
 		Debug.Log ("up");
-		if (holder) {
-			local_player.CmdRelease (this.gameObject);
-			holder = false;
+		if (m_holder) {
+			s_local_player.CmdRelease (this.gameObject);
+			m_holder = false;
 		}
 	}
 
 	void OnMouseDrag () {
-		if (holder) {
-			local_player.CmdDrag (this.gameObject, Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, 10)));
+		if (m_holder) {
+			s_local_player.CmdDrag (this.gameObject, Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, (Camera.main.transform.position.z * -1))));
 		}
 	}
 }

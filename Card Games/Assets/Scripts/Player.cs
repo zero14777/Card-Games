@@ -4,7 +4,7 @@ using System.Collections;
 
 public class Player : NetworkBehaviour {
 
-	private Card held_card;
+	private Card m_held_card;
 
 	void Start () {
 		Card.SetLocalPlayer ();
@@ -20,18 +20,18 @@ public class Player : NetworkBehaviour {
 
 	[Command]
 	public void CmdGrab (GameObject card_obj) {
-		held_card = card_obj.GetComponent<Card> ();
-		held_card.SetHeld (true);
+		m_held_card = card_obj.GetComponent<Card> ();
+		m_held_card.SetHeld (true);
 	}
 
 	[Command]
 	public void CmdRelease (GameObject card_obj) {
-		held_card.SetHeld (false);
-		held_card = null;
+		m_held_card.SetHeld (false);
+		m_held_card = null;
 	}
 
 	[Command]
 	public void CmdDrag (GameObject card_obj, Vector3 mouse_position) {
-		held_card.transform.position = mouse_position;
+		m_held_card.transform.position = mouse_position;
 	}
 }
