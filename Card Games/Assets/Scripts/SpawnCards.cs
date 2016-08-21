@@ -9,18 +9,15 @@ using System.IO;
 	 * </summary>*/
 public class SpawnCards : NetworkBehaviour {
 
-	public GameObject card;
+	public GameObject card_prefab;
 
+	[Server]
 	void Start () {
 		DirectoryInfo card_folder = new DirectoryInfo (Application.dataPath + "/../Card_Sprites");
 		FileInfo[] png_files = card_folder.GetFiles ("*.png"); // can use jpg files too
 
 		foreach (FileInfo file in png_files) {
-			GameObject new_card = (GameObject)Instantiate (card, transform.position, Quaternion.identity);
-			Card card_component = new_card.GetComponent<Card> ();
-			card_component.m_filename = file.Name;
-			card_component.LoadFront ();
-			NetworkServer.Spawn (new_card);
+			Card.CreateNewCard (file.Name, transform.position, card_prefab);
 		}
 	}
 }

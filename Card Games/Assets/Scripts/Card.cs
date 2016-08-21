@@ -5,7 +5,7 @@ using System.IO;
 
 public class Card : NetworkBehaviour {
 
-	static private Player s_local_player = null;
+	private static GameObject m_card_prefab;
 
 	[SyncVar]
 	public string m_filename = "";
@@ -25,6 +25,17 @@ public class Card : NetworkBehaviour {
 	public delegate void NoArgDelegate ();
 	[SyncEvent]
 	public event NoArgDelegate EventFlip;
+
+	public static void CreateNewCard (string file_name, Vector3 position, GameObject card_prefab) {
+		if (card_prefab != null) {
+			m_card_prefab = card_prefab;
+		}
+		GameObject new_card = (GameObject)Instantiate (m_card_prefab, position, Quaternion.identity);
+		Card card_component = new_card.GetComponent<Card> ();
+		card_component.m_filename = file_name;
+		card_component.LoadFront ();
+		NetworkServer.Spawn (new_card);
+	}
 
 	void Start () {
 		m_holder = false;
@@ -77,15 +88,6 @@ public class Card : NetworkBehaviour {
 		m_front = Sprite.Create (texture, new Rect (0, 0, texture.width, texture.height), new Vector2 (0.5f, 0.5f), 100);
 	}
 
-	static public void SetLocalPlayer () {
-		Player[] players = FindObjectsOfType<Player> ();
-		foreach (Player player in players) {
-			if (player.isLocalPlayer) {
-				s_local_player = player;
-			}
-		}
-	}
-
 	// Hotkeys
 
 	void OnMouseOver () {
@@ -94,7 +96,11 @@ public class Card : NetworkBehaviour {
 		}
 
 		if (Input.GetKeyDown("f")) {
-			s_local_player.CmdFlip (this.gameObject);
+			Player.s_local_player.CmdFlip (this.gameObject);
+		}
+
+		if (Input.GetKeyDown("a")) {
+			Player.s_local_player.CmdAddToHand (this.gameObject, m_filename);
 		}
 	}
 
@@ -152,7 +158,7 @@ public class Card : NetworkBehaviour {
 	void OnMouseDown () {
 		Debug.Log ("down");
 		if (!m_held) {
-			s_local_player.CmdGrab (this.gameObject);
+			Player.s_local_player.CmdGrab (this.gameObject);
 			m_holder = true;
 		}
 	}
@@ -160,14 +166,14 @@ public class Card : NetworkBehaviour {
 	void OnMouseUp () {
 		Debug.Log ("up");
 		if (m_holder) {
-			s_local_player.CmdRelease (this.gameObject);
+			Player.s_local_player.CmdRelease (this.gameObject);
 			m_holder = false;
 		}
 	}
 
 	void OnMouseDrag () {
 		if (m_holder) {
-			s_local_player.CmdDrag (this.gameObject, Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, (Camera.main.transform.position.z * -1))));
+			Player.s_local_player.CmdDrag (this.gameObject, Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, (Camera.main.transform.position.z * -1))));
 		}
 	}
 }

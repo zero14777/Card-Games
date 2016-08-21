@@ -50,6 +50,7 @@
      <Compile Include="Assets\Scripts\Deck.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
      <Compile Include="Assets\Scripts\SpawnCards.cs" />
+     <Compile Include="Assets\Scripts\UICard.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
