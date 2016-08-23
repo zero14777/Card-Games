@@ -8,6 +8,8 @@ public class Card : NetworkBehaviour {
 	private static GameObject m_card_prefab;
 
 	[SyncVar]
+	public Vector3 m_drag_transform;
+	[SyncVar]
 	public string m_filename = "";
 	public Sprite m_front;
 	public Vector3 m_blowup_size;
@@ -45,7 +47,7 @@ public class Card : NetworkBehaviour {
 		m_normal_size = new Vector3 (0.33f, 0.33f, 1);
 		m_blowup_size = new Vector3 (1, 1, 1);
 		if (isClient) {
-			if (File.Exists (Application.dataPath + "/../Card_Sprites/" + m_filename)) {
+			if (File.Exists (Application.dataPath + "/../Cards/" + m_filename)) {
 				LoadFront ();
 			} else {
 				m_front = Resources.Load<Sprite> ("Missing_Data");
@@ -58,14 +60,13 @@ public class Card : NetworkBehaviour {
 		}
 	}
 		
-	// <summary>
-	// Loads an image for the front of the card from the
-	// Card_Sprites directory based on the set m_filename.
-	// 
-	// If no image is found a generic missing image is displayed.
-	// </summary>
+	/// <summary>
+	/// Loads an image for the front of the card from the
+	/// Card_Sprites directory based on the set m_filename.
+	/// If no image is found a generic missing image is displayed.
+	/// </summary>
 	public void LoadFront () {
-		byte[] bytes = System.IO.File.ReadAllBytes (Application.dataPath + "/../Card_Sprites/" + m_filename);
+		byte[] bytes = System.IO.File.ReadAllBytes (Application.dataPath + "/../Cards/" + m_filename);
 		Texture2D texture = new Texture2D (1, 1);
 		texture.LoadImage (bytes);
 
@@ -156,7 +157,7 @@ public class Card : NetworkBehaviour {
 	}
 
 	void OnMouseDown () {
-		Debug.Log ("down");
+		//Debug.Log ("down");
 		if (!m_held) {
 			Player.s_local_player.CmdGrab (this.gameObject);
 			m_holder = true;
@@ -164,16 +165,24 @@ public class Card : NetworkBehaviour {
 	}
 
 	void OnMouseUp () {
-		Debug.Log ("up");
+		//Debug.Log ("up");
 		if (m_holder) {
-			Player.s_local_player.CmdRelease (this.gameObject);
+			Player.s_local_player.CmdRelease ();
 			m_holder = false;
 		}
 	}
 
 	void OnMouseDrag () {
 		if (m_holder) {
-			Player.s_local_player.CmdDrag (this.gameObject, Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, (Camera.main.transform.position.z * -1))));
+			Vector3 drag_pos = Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, (Camera.main.transform.position.z * -1)));
+			Player.s_local_player.CmdDrag (drag_pos);
+			transform.position = drag_pos;
+		}
+	}
+
+	void FixedUpdate () {
+		if (m_held && !m_holder) {
+			transform.position = Vector3.Lerp (transform.position, m_drag_transform, Time.deltaTime * 15);
 		}
 	}
 }

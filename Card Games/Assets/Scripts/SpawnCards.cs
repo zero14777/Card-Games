@@ -11,9 +11,9 @@ public class SpawnCards : NetworkBehaviour {
 
 	public GameObject card_prefab;
 
-	[Server]
+	[ServerCallback]
 	void Start () {
-		DirectoryInfo card_folder = new DirectoryInfo (Application.dataPath + "/../Card_Sprites");
+		DirectoryInfo card_folder = new DirectoryInfo (Application.dataPath + "/../Cards");
 		FileInfo[] png_files = card_folder.GetFiles ("*.png"); // can use jpg files too
 
 		foreach (FileInfo file in png_files) {
