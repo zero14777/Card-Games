@@ -97,6 +97,12 @@ public class Player : NetworkBehaviour {
 		Destroy (card_obj);
 	}
 
+	[Command]
+	public void CmdDrawToHand (string card) {
+		m_hand.Add (card);
+		RpcNewHandCard (card);
+	}
+
 	/// <summary>
 	/// Removes the designated card from the hand of the palyer and creates
 	/// a server game object to represent that card on the board.
@@ -109,6 +115,17 @@ public class Player : NetworkBehaviour {
 	public void CmdDropFromHand (string card, Vector3 drop_position) {
 		m_hand.Remove (card);
 		Card.CreateNewCard (card, drop_position, null);
+	}
+
+	[Command]
+	public void CmdReveal (string card, Vector3 drop_position) {//!
+		Card.CreateNewCard (card, drop_position, null).GetComponent<Card> ().Flip ();
+	}
+
+	[Command]
+	public void CmdPlaceOnDeck (string card, GameObject card_obj, GameObject deck_obj) { //!
+		deck_obj.GetComponent<Deck> ().AddCard (card);
+		Destroy (card_obj);
 	}
 
 	// Flipping Cards
@@ -130,12 +147,12 @@ public class Player : NetworkBehaviour {
 	[Command]
 	public void CmdGrab (GameObject card_obj) {
 		m_held_card = card_obj.GetComponent<Card> ();
-		m_held_card.SetHeld (true);
+		m_held_card.m_held = true;
 	}
 
 	[Command]
 	public void CmdRelease () {
-		m_held_card.SetHeld (false);
+		m_held_card.m_held = false;
 		m_held_card = null;
 	}
 

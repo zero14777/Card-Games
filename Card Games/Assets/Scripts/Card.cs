@@ -8,7 +8,7 @@ public class Card : NetworkBehaviour {
 	private static GameObject m_card_prefab;
 
 	[SyncVar]
-	public Vector3 m_drag_transform;
+	public Vector3 m_drag_transform; // !!!!! RECT TRANSFORM OR REGULAR TRANSFORM?
 	[SyncVar]
 	public string m_filename = "";
 	public Sprite m_front;
@@ -16,7 +16,7 @@ public class Card : NetworkBehaviour {
 
 	private Sprite m_back;
 	[SyncVar]
-	private bool m_held;
+	public bool m_held;
 	[SyncVar]
 	public bool m_upright = false;
 	private bool m_holder;
@@ -28,7 +28,7 @@ public class Card : NetworkBehaviour {
 	[SyncEvent]
 	public event NoArgDelegate EventFlip;
 
-	public static void CreateNewCard (string file_name, Vector3 position, GameObject card_prefab) {
+	public static GameObject CreateNewCard (string file_name, Vector3 position, GameObject card_prefab) {
 		if (card_prefab != null) {
 			m_card_prefab = card_prefab;
 		}
@@ -37,6 +37,7 @@ public class Card : NetworkBehaviour {
 		card_component.m_filename = file_name;
 		card_component.LoadFront ();
 		NetworkServer.Spawn (new_card);
+		return new_card;
 	}
 
 	void Start () {
@@ -152,10 +153,6 @@ public class Card : NetworkBehaviour {
 
 	// Dragging & Dropping
 
-	public void SetHeld (bool val) {
-		m_held = val;
-	}
-
 	void OnMouseDown () {
 		//Debug.Log ("down");
 		if (!m_held) {
@@ -165,8 +162,23 @@ public class Card : NetworkBehaviour {
 	}
 
 	void OnMouseUp () {
-		//Debug.Log ("up");
+		Debug.Log ("up");
 		if (m_holder) {
+			RaycastHit2D[] temp = Physics2D.RaycastAll (Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, (Camera.main.transform.position.z * -1))), Vector2.zero);
+			/*foreach (RaycastHit2D hit in temp) {
+				Debug.Log (hit.transform.gameObject.name);
+				if (hit.transform.gameObject == GameObject.Find ("Hand")) {
+					Player.s_local_player.CmdAddToHand (this.gameObject, m_filename);
+					return;
+				}
+			}*/  //////////////// !!!!!!!!!!!!!!!!!!!!!!!!
+			foreach (RaycastHit2D hit in temp) {
+				Debug.Log (hit.transform.gameObject.name);
+				if (hit.transform.gameObject == GameObject.Find ("Deck")) {
+					Player.s_local_player.CmdPlaceOnDeck (m_filename, this.gameObject, hit.transform.gameObject);
+					return;
+				}
+			}
 			Player.s_local_player.CmdRelease ();
 			m_holder = false;
 		}
