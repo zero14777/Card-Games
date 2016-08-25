@@ -5,25 +5,30 @@ using System.IO;
 
 public class Card : NetworkBehaviour {
 
+	// References
 	private static GameObject m_card_prefab;
+	private SpriteRenderer m_sprite_component;
+	public Sprite m_front;
 
-	[SyncVar]
-	public Vector3 m_drag_transform; // !!!!! RECT TRANSFORM OR REGULAR TRANSFORM?
+	// Misc state variables
 	[SyncVar]
 	public string m_filename = "";
-	public Sprite m_front;
-	public Vector3 m_blowup_size;
-
 	private Sprite m_back;
+	private bool m_blownup = false;
+	private Vector3 m_normal_size;
+	public Vector3 m_blowup_size;
+	private int m_lerp_time = 15;
+
+	// Dragging & Dropping
 	[SyncVar]
 	public bool m_held;
 	[SyncVar]
 	public bool m_upright = false;
 	private bool m_holder;
-	private bool m_blownup = false;
-	private SpriteRenderer m_sprite_component;
-	private Vector3 m_normal_size;
+	[SyncVar]
+	public Vector3 m_drag_transform; // !!!!! RECT TRANSFORM OR REGULAR TRANSFORM?
 
+	// Flipping
 	public delegate void NoArgDelegate ();
 	[SyncEvent]
 	public event NoArgDelegate EventFlip;
@@ -60,19 +65,14 @@ public class Card : NetworkBehaviour {
 			m_sprite_component.sprite = m_back;
 		}
 	}
-		
+
 	/// <summary>
-	/// Loads an image for the front of the card from the
-	/// Card_Sprites directory based on the set m_filename.
-	/// If no image is found a generic missing image is displayed.
+	/// Generates a card sized sprite for an image.
 	/// </summary>
-	public void LoadFront () {
-		byte[] bytes = System.IO.File.ReadAllBytes (Application.dataPath + "/../Cards/" + m_filename);
+	/// <param name="card">The image to make a sprite of in a byte array.</param>
+	public static Sprite GenerateSprite (byte[] bytes) {
 		Texture2D texture = new Texture2D (1, 1);
 		texture.LoadImage (bytes);
-
-		// This scales all card images to the standard card size
-
 		int width = 750;
 		int height = 1050;
 		Rect texture_rect = new Rect (0, 0, width, height);
@@ -86,14 +86,38 @@ public class Card : NetworkBehaviour {
 		texture.Resize (width, height);
 		texture.ReadPixels (texture_rect, 0, 0, true);
 		texture.Apply (true);
+		return Sprite.Create (texture, new Rect (0, 0, texture.width, texture.height), 
+								new Vector2 (0.5f, 0.5f), 100);
+	}
 
-		m_front = Sprite.Create (texture, new Rect (0, 0, texture.width, texture.height), new Vector2 (0.5f, 0.5f), 100);
+	/// <summary>
+	/// Loads an image for the front of the card from the
+	/// Card_Sprites directory based on the set m_filename.
+	/// If no image is found a generic missing image is displayed.
+	/// </summary>
+	public void LoadFront () {
+		byte[] bytes = System.IO.File.ReadAllBytes (Application.dataPath + "/../Cards/" + m_filename);
+		m_front = GenerateSprite (bytes);
 	}
 
 	// Hotkeys
 
+	void OnMouseEnter () {
+		string hover_text = "F - Flip Card\nA - Add to Hand\n";
+		if (m_upright) {
+			hover_text = hover_text + "Z - Zoom\n";
+		}
+				
+		LocalGameManager.Instance.SetHoverText (hover_text);
+	}
+
+	void OnMouseExit () {
+		LocalGameManager.Instance.SetHoverText ("");
+	}
+
 	void OnMouseOver () {
-		if (m_upright && Input.GetKeyDown("s")) {
+		LocalGameManager.Instance.MoveHoverText ();
+		if (m_upright && Input.GetKeyDown("z")) {
 			ChangeSize ();
 		}
 
@@ -154,7 +178,6 @@ public class Card : NetworkBehaviour {
 	// Dragging & Dropping
 
 	void OnMouseDown () {
-		//Debug.Log ("down");
 		if (!m_held) {
 			Player.s_local_player.CmdGrab (this.gameObject);
 			m_holder = true;
@@ -162,16 +185,18 @@ public class Card : NetworkBehaviour {
 	}
 
 	void OnMouseUp () {
-		Debug.Log ("up");
 		if (m_holder) {
-			RaycastHit2D[] temp = Physics2D.RaycastAll (Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, (Camera.main.transform.position.z * -1))), Vector2.zero);
+			RaycastHit2D[] temp = Physics2D.RaycastAll (Camera.main.ScreenToWorldPoint (
+														new Vector3 (Input.mousePosition.x, Input.mousePosition.y, 
+														(Camera.main.transform.position.z * -1))),
+														Vector2.zero);
 			/*foreach (RaycastHit2D hit in temp) {
 				Debug.Log (hit.transform.gameObject.name);
 				if (hit.transform.gameObject == GameObject.Find ("Hand")) {
-					Player.s_local_player.CmdAddToHand (this.gameObject, m_filename);
+					Player.s_local_player.CmdAddToHand (this.gameObject, m_filename); Dropping to UI layer?
 					return;
 				}
-			}*/  //////////////// !!!!!!!!!!!!!!!!!!!!!!!!
+			}*/
 			foreach (RaycastHit2D hit in temp) {
 				Debug.Log (hit.transform.gameObject.name);
 				if (hit.transform.gameObject == GameObject.Find ("Deck")) {
@@ -186,7 +211,9 @@ public class Card : NetworkBehaviour {
 
 	void OnMouseDrag () {
 		if (m_holder) {
-			Vector3 drag_pos = Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, (Camera.main.transform.position.z * -1)));
+			Vector3 drag_pos = Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x,
+																Input.mousePosition.y,
+																(Camera.main.transform.position.z * -1)));
 			Player.s_local_player.CmdDrag (drag_pos);
 			transform.position = drag_pos;
 		}
@@ -194,7 +221,7 @@ public class Card : NetworkBehaviour {
 
 	void FixedUpdate () {
 		if (m_held && !m_holder) {
-			transform.position = Vector3.Lerp (transform.position, m_drag_transform, Time.deltaTime * 15);
+			transform.position = Vector3.Lerp (transform.position, m_drag_transform, Time.deltaTime * m_lerp_time);
 		}
 	}
 }

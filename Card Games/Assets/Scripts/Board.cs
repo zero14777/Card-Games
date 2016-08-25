@@ -5,7 +5,7 @@ public class Board : MonoBehaviour {
 
 	public static bool s_no_drag = false;
 
-	// Currently only contains code for dragging and moving the camera.
+	// Currently only contains code for dragging and moving the camera. Really janky movement ATM.
 
 	private Vector3 m_drag_point;
 	private Vector3 m_camera_origin;

@@ -59,26 +59,7 @@ public class Player : NetworkBehaviour {
 			new_hand_card.GetComponent<UICard> ().m_name = card; // !
 
 			byte[] bytes = System.IO.File.ReadAllBytes (Application.dataPath + "/../Cards/" + card);
-			Texture2D texture = new Texture2D (1, 1);
-			texture.LoadImage (bytes);
-
-			// This scales all card images to the standard card size FUNCTIONALIZE THIS
-
-			int width = 750;
-			int height = 1050;
-			Rect texture_rect = new Rect (0, 0, width, height);
-			texture.filterMode = FilterMode.Trilinear;
-			texture.Apply (true);
-			RenderTexture render = new RenderTexture(width, height, 32);
-			Graphics.SetRenderTarget(render);
-			GL.LoadPixelMatrix(0,1,1,0);
-			GL.Clear(true,true,new Color(0,0,0,0));
-			Graphics.DrawTexture(new Rect(0,0,1,1),texture);
-			texture.Resize (width, height);
-			texture.ReadPixels (texture_rect, 0, 0, true);
-			texture.Apply (true);
-
-			new_hand_card.GetComponent<Image> ().sprite = Sprite.Create (texture, new Rect (0, 0, texture.width, texture.height), new Vector2 (0.5f, 0.5f), 100);
+			new_hand_card.GetComponent<Image> ().sprite = Card.GenerateSprite (bytes);
 		}
 	}
 
@@ -118,8 +99,9 @@ public class Player : NetworkBehaviour {
 	}
 
 	[Command]
-	public void CmdReveal (string card, Vector3 drop_position) {//!
-		Card.CreateNewCard (card, drop_position, null).GetComponent<Card> ().Flip ();
+	public void CmdReveal (string card, Vector3 drop_position) {
+		GameObject new_card_obj = Card.CreateNewCard (card, drop_position, m_card_prefab);
+		new_card_obj.GetComponent<Card> ().Flip ();
 	}
 
 	[Command]
