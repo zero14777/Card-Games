@@ -7,22 +7,24 @@ public class Deck : NetworkBehaviour {
 	public SyncListString m_deck = new SyncListString ();
 
 	void OnMouseEnter () {
-		LocalGameManager.Instance.SetHoverText ("D - Draw\n" +
-												"R - Reveal\n" +
-												"S - Shuffle\n");
+		GameManager.Instance.SetHoverText ("D - Draw\n" +
+											"R - Reveal\n" +
+											"S - Shuffle\n");
 	}
 
 	void OnMouseExit () {
-		LocalGameManager.Instance.SetHoverText ("");
+		GameManager.Instance.SetHoverText ("");
 	}
 
 	void OnMouseOver () {
-		LocalGameManager.Instance.MoveHoverText ();
+		GameManager.Instance.MoveHoverText ();
 		if (Input.GetKeyDown("d") && m_deck.Count > 0) {
 			Player.s_local_player.CmdDrawToHand (GetTopCard()); // bad way to do this everything should happen on the server same with other functions
 		}
 		if (Input.GetKeyDown("r") && m_deck.Count > 0) {
-			Player.s_local_player.CmdReveal (GetTopCard(), Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, (Camera.main.transform.position.z * -1))));
+			Player.s_local_player.CmdReveal (GetTopCard(), Camera.main.ScreenToWorldPoint 
+											(new Vector3 (Input.mousePosition.x, Input.mousePosition.y,
+											(Camera.main.transform.position.z * -1))));
 		}
 		if (Input.GetKeyDown("s") && m_deck.Count > 0) {
 			ShuffleDeck ();

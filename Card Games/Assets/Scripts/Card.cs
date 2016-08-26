@@ -108,15 +108,15 @@ public class Card : NetworkBehaviour {
 			hover_text = hover_text + "Z - Zoom\n";
 		}
 				
-		LocalGameManager.Instance.SetHoverText (hover_text);
+		GameManager.Instance.SetHoverText (hover_text);
 	}
 
 	void OnMouseExit () {
-		LocalGameManager.Instance.SetHoverText ("");
+		GameManager.Instance.SetHoverText ("");
 	}
 
 	void OnMouseOver () {
-		LocalGameManager.Instance.MoveHoverText ();
+		GameManager.Instance.MoveHoverText ();
 		if (m_upright && Input.GetKeyDown("z")) {
 			ChangeSize ();
 		}

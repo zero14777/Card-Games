@@ -48,7 +48,7 @@
      <Compile Include="Assets\Scripts\Board.cs" />
      <Compile Include="Assets\Scripts\Card.cs" />
      <Compile Include="Assets\Scripts\Deck.cs" />
-     <Compile Include="Assets\Scripts\LocalGameManager.cs" />
+     <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
      <Compile Include="Assets\Scripts\SpawnCards.cs" />
      <Compile Include="Assets\Scripts\UICard.cs" />

@@ -11,6 +11,10 @@ using System.Collections.Generic;
 public class Player : NetworkBehaviour {
 
 	public static Player s_local_player;
+	[SyncVar]
+	public int m_player_ID;
+	[SyncVar]
+	public string m_player_name = "player";
 
 	[SerializeField]
 	private GameObject m_hand_card;
@@ -40,6 +44,9 @@ public class Player : NetworkBehaviour {
 		if (isLocalPlayer) {
 			SetLocalPlayer ();
 			m_hand_object = GameObject.Find ("Hand");
+		}
+		if (isServer) {
+			m_player_ID = GameManager.Instance.AddPlayer (this.gameObject);
 		}
 	}
 
@@ -76,12 +83,14 @@ public class Player : NetworkBehaviour {
 		m_hand.Add (card);
 		RpcNewHandCard (card);
 		Destroy (card_obj);
+		GameManager.Instance.UpdateHandCount (m_player_ID, m_hand.Count);
 	}
 
 	[Command]
 	public void CmdDrawToHand (string card) {
 		m_hand.Add (card);
 		RpcNewHandCard (card);
+		GameManager.Instance.UpdateHandCount (m_player_ID, m_hand.Count);
 	}
 
 	/// <summary>
@@ -95,7 +104,8 @@ public class Player : NetworkBehaviour {
 	[Command]
 	public void CmdDropFromHand (string card, Vector3 drop_position) {
 		m_hand.Remove (card);
-		Card.CreateNewCard (card, drop_position, null);
+		Card.CreateNewCard (card, drop_position, m_card_prefab);
+		GameManager.Instance.UpdateHandCount (m_player_ID, m_hand.Count);
 	}
 
 	[Command]
