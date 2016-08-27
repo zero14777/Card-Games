@@ -87,7 +87,8 @@ public class Player : NetworkBehaviour {
 	}
 
 	[Command]
-	public void CmdDrawToHand (string card) {
+	public void CmdDrawToHand (GameObject deck_obj) {
+		string card = deck_obj.GetComponent<Deck> ().GetTopCard();
 		m_hand.Add (card);
 		RpcNewHandCard (card);
 		GameManager.Instance.UpdateHandCount (m_player_ID, m_hand.Count);
@@ -109,7 +110,8 @@ public class Player : NetworkBehaviour {
 	}
 
 	[Command]
-	public void CmdReveal (string card, Vector3 drop_position) {
+	public void CmdReveal (GameObject deck_obj, Vector3 drop_position) {
+		string card = deck_obj.GetComponent<Deck> ().GetTopCard();
 		GameObject new_card_obj = Card.CreateNewCard (card, drop_position, m_card_prefab);
 		new_card_obj.GetComponent<Card> ().Flip ();
 	}
@@ -118,6 +120,11 @@ public class Player : NetworkBehaviour {
 	public void CmdPlaceOnDeck (string card, GameObject card_obj, GameObject deck_obj) { //!
 		deck_obj.GetComponent<Deck> ().AddCard (card);
 		Destroy (card_obj);
+	}
+
+	[Command]
+	public void CmdShuffleDeck (GameObject deck_obj) {
+		deck_obj.GetComponent<Deck> ().ShuffleDeck ();
 	}
 
 	// Flipping Cards
