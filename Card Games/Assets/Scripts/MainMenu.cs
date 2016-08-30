@@ -8,6 +8,5 @@ public class MainMenu : MonoBehaviour {
 
 	public void SetPlayerName () {
 		m_player_name = GameObject.Find ("Player Name").GetComponent<InputField> ().text;
-		Debug.Log (m_player_name);
 	}
 }

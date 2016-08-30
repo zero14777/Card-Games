@@ -52,19 +52,17 @@ public class Player : NetworkBehaviour {
 			CmdSetName (MainMenu.m_player_name);
 		}
 		if (isServer) {
-			m_player_ID = GameManager.Instance.AddPlayer (this.gameObject);
+			GameManager.Instance.RpcUpdatePlayersList ();
 		}
 	}
 
-	/*public override void OnNetworkDestroy () {
+	public override void OnNetworkDestroy () {
 		if (isServer) {
 			foreach (string card in m_hand) {
-				Card.CreateNewCard (card, new Vector3 (0, 0, 0), m_card_prefab);
-				//	CmdDropFromHand (card, new Vector3 (0, 0, 0));
+				Card.CreateNewCard (card, new Vector3 (0, 0, 0), m_card_prefab);  // Make cards drop to a more convenient spot !
 			}
-			GameManager.Instance.RemovePlayer (m_player_ID);
 		}
-	}*/
+	}
 
 	// Hand interactions
 
@@ -99,7 +97,7 @@ public class Player : NetworkBehaviour {
 		m_hand.Add (card);
 		RpcNewHandCard (card);
 		Destroy (card_obj);
-		GameManager.Instance.UpdateHandCount (m_player_ID, m_hand.Count);
+		GameManager.Instance.RpcUpdatePlayersList ();
 	}
 
 	[Command]
@@ -107,7 +105,7 @@ public class Player : NetworkBehaviour {
 		string card = deck_obj.GetComponent<Deck> ().GetTopCard();
 		m_hand.Add (card);
 		RpcNewHandCard (card);
-		GameManager.Instance.UpdateHandCount (m_player_ID, m_hand.Count);
+		GameManager.Instance.RpcUpdatePlayersList ();
 	}
 
 	/// <summary>
@@ -122,7 +120,7 @@ public class Player : NetworkBehaviour {
 	public void CmdDropFromHand (string card, Vector3 drop_position) {
 		m_hand.Remove (card);
 		Card.CreateNewCard (card, drop_position, m_card_prefab);
-		GameManager.Instance.UpdateHandCount (m_player_ID, m_hand.Count);
+		GameManager.Instance.RpcUpdatePlayersList ();
 	}
 
 	[Command]

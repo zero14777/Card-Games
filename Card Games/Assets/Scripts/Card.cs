@@ -26,7 +26,7 @@ public class Card : NetworkBehaviour {
 	public bool m_upright = false;
 	private bool m_holder;
 	[SyncVar]
-	public Vector3 m_drag_transform; // !!!!! RECT TRANSFORM OR REGULAR TRANSFORM?
+	public Vector3 m_drag_transform;
 
 	// Flipping
 	public delegate void NoArgDelegate ();

@@ -43,7 +43,7 @@ public class Deck : NetworkBehaviour {
 	void OnMouseOver () {
 		GameManager.Instance.MoveHoverText ();
 		if (Input.GetKeyDown("d") && m_deck.Count > 0) {
-			Player.s_local_player.CmdDrawToHand (this.gameObject); // bad way to do this everything should happen on the server same with other functions
+			Player.s_local_player.CmdDrawToHand (this.gameObject);
 		}
 		if (Input.GetKeyDown("r") && m_deck.Count > 0) {
 			Player.s_local_player.CmdReveal (this.gameObject, Camera.main.ScreenToWorldPoint 

@@ -39,9 +39,10 @@ public class UICard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 	}
 
 	public void OnEndDrag (PointerEventData event_data) {
-		//this.transform.SetParent (s_hand_obj.transform);
 		Board.EnableDrag ();
-		Player.s_local_player.CmdDropFromHand (m_name, Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, (Camera.main.transform.position.z * -1)))); //Add check to be sure card was dropped properly?
+		Player.s_local_player.CmdDropFromHand (m_name, Camera.main.ScreenToWorldPoint (
+												new Vector3 (Input.mousePosition.x, Input.mousePosition.y,
+												(Camera.main.transform.position.z * -1))));
 		GameObject.Destroy (this.gameObject);
 	}
 }
