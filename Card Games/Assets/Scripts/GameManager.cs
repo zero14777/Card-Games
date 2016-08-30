@@ -41,6 +41,14 @@ public class GameManager : NetworkBehaviour {
 
 	[ClientRpc]
 	private void RpcUpdatePlayersList () {
+		/*Player[] players = FindObjectsOfType<Player> ();
+		m_players_list.text = "Players:\n";
+		foreach (Player player in players) {
+			m_players_list.text += player.m_player_name;
+			m_players_list.text += " - Hand ";
+			m_players_list.text += player.m_hand.Count;
+			m_players_list.text += "\n";
+		}/*/
 		m_players_list.text = "Players:\n";
 		foreach (Player_Data data in m_players) {
 			m_players_list.text += data.player_name;
@@ -54,11 +62,19 @@ public class GameManager : NetworkBehaviour {
 		Player player = player_obj.GetComponent<Player> ();
 		Player_Data new_player = new Player_Data (++m_id_counter, player.m_player_name,
 													player.m_hand.Count);
-		//new_player.player_name = player.m_player_name;
-		//new_player.ID = ++m_id_counter;
 		m_players.Add (new_player);
 		RpcUpdatePlayersList ();
 		return new_player.ID;
+	}
+
+	public void RemovePlayer (int player_id) {
+		foreach (Player_Data data in m_players) {
+			if (data.ID == player_id) {
+				m_players.Remove (data);
+				break;
+			}
+		}
+		RpcUpdatePlayersList ();
 	}
 
 	/*private Player_Data GetPlayer (int player_id) {

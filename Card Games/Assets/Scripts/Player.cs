@@ -37,6 +37,11 @@ public class Player : NetworkBehaviour {
 		}
 	}
 
+	[Command]
+	private void CmdSetName (string name) {
+		m_player_name = name;
+	}
+
 	/// <summary>
 	/// Automatically sets up the local client player object.
 	/// </summary>
@@ -44,11 +49,22 @@ public class Player : NetworkBehaviour {
 		if (isLocalPlayer) {
 			SetLocalPlayer ();
 			m_hand_object = GameObject.Find ("Hand");
+			CmdSetName (MainMenu.m_player_name);
 		}
 		if (isServer) {
 			m_player_ID = GameManager.Instance.AddPlayer (this.gameObject);
 		}
 	}
+
+	/*public override void OnNetworkDestroy () {
+		if (isServer) {
+			foreach (string card in m_hand) {
+				Card.CreateNewCard (card, new Vector3 (0, 0, 0), m_card_prefab);
+				//	CmdDropFromHand (card, new Vector3 (0, 0, 0));
+			}
+			GameManager.Instance.RemovePlayer (m_player_ID);
+		}
+	}*/
 
 	// Hand interactions
 
