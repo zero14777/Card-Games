@@ -2,7 +2,17 @@
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+
+public class Tuple<Type1, Type2> {
+	public Type1 Name { get; set;}
+	public Type2 Function { get; set;}
+	internal Tuple(Type1 t1, Type2 t2) {
+		Name = t1;
+		Function = t2;
+	}
+}
 
 public class GameManager : NetworkBehaviour {
 
@@ -52,14 +62,17 @@ public class GameManager : NetworkBehaviour {
 	public GameObject RCMenu_prefab;
 	public GameObject Button_obj;
 
-	public void RightClickMenu (NoArgDelegate function) {
-		Debug.Log ("asdf");
+	public void RightClickMenu (List<Tuple<string, UnityEngine.Events.UnityAction>> functions) {
 		GameObject tempcanvas = GameObject.Find ("Canvas");
 		GameObject menu = Instantiate (RCMenu_prefab);
 		menu.transform.parent = tempcanvas.transform;
 		menu.transform.position = Input.mousePosition;
-		GameObject button = Instantiate (Button_obj);
-		button.transform.parent = menu.transform;
-		button.GetComponent<Button> ().onClick.AddListener (function);
+		((RectTransform)(menu.transform)).sizeDelta = new Vector2 (200, functions.Count * 40);
+		foreach (Tuple<string, UnityEngine.Events.UnityAction> function in functions) {
+			GameObject button = Instantiate (Button_obj);
+			button.transform.parent = menu.transform;
+			button.GetComponent<Button> ().onClick.AddListener (function.Function);
+			button.transform.FindChild ("Text").gameObject.GetComponent<Text> ().text = function.Name;
+		}
 	}
 }

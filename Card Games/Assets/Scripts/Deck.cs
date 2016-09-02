@@ -40,21 +40,40 @@ public class Deck : NetworkBehaviour {
 		UpdateHoverText ();
 	}
 
+	void Draw () {
+		Player.s_local_player.CmdDrawToHand (this.gameObject);
+	}
+
+	void Reveal () {
+		Player.s_local_player.CmdReveal (this.gameObject, Camera.main.ScreenToWorldPoint 
+			(new Vector3 (Input.mousePosition.x, Input.mousePosition.y,
+			(Camera.main.transform.position.z * -1))));
+	}
+
+	void Shuffle () {
+		Player.s_local_player.CmdShuffleDeck (this.gameObject);
+	}
+
 	void OnMouseOver () {
 		GameManager.Instance.MoveHoverText ();
 		if (Input.GetKeyDown("d") && m_deck.Count > 0) {
-			Player.s_local_player.CmdDrawToHand (this.gameObject);
+			Draw ();
 		}
 		if (Input.GetKeyDown("r") && m_deck.Count > 0) {
-			Player.s_local_player.CmdReveal (this.gameObject, Camera.main.ScreenToWorldPoint 
-											(new Vector3 (Input.mousePosition.x, Input.mousePosition.y,
-											(Camera.main.transform.position.z * -1))));
+			Reveal ();
 		}
 		if (Input.GetKeyDown("s") && m_deck.Count > 0) {
 			Player.s_local_player.CmdShuffleDeck (this.gameObject);
 		}
 		if (Input.GetKeyDown("l")) {
-			GameManager.Instance.RightClickMenu ();//new NoArgDelegate (FlipEvent));
+			List<Tuple<string, UnityEngine.Events.UnityAction>> functions = new List<Tuple<string, UnityEngine.Events.UnityAction>> ();
+			functions.Add(new Tuple<string, UnityEngine.Events.UnityAction>
+				("Draw", new UnityEngine.Events.UnityAction (Draw)));
+			functions.Add(new Tuple<string, UnityEngine.Events.UnityAction>
+				("Reveal", new UnityEngine.Events.UnityAction (Reveal)));
+			functions.Add(new Tuple<string, UnityEngine.Events.UnityAction>
+				("Shuffle", new UnityEngine.Events.UnityAction (Shuffle)));
+			GameManager.Instance.RightClickMenu (functions);
 		}
 	}
 
@@ -73,7 +92,7 @@ public class Deck : NetworkBehaviour {
 	public void ShuffleDeck () {
 		List<string> temp_deck = new List<string> ();
 		while (m_deck.Count > 0) {
-			int pick_a_card = Random.Range(0, m_deck.Count);
+			int pick_a_card = UnityEngine.Random.Range(0, m_deck.Count);
 			temp_deck.Add (m_deck [pick_a_card]);
 			m_deck.RemoveAt (pick_a_card);
 		}

@@ -3,8 +3,6 @@ using UnityEngine.Networking;
 using System.Collections;
 using System.IO;
 
-public delegate void NoArgDelegate ();
-
 public class Card : NetworkBehaviour {
 
 	// References
@@ -33,9 +31,7 @@ public class Card : NetworkBehaviour {
 	// Flipping
 	//public delegate void NoArgDelegate ();
 	[SyncEvent]
-	public event NoArgDelegate EventFlip;
-	[SyncEvent]
-	public event NoArgDelegate EventZoom;
+	public event UnityEngine.Events.UnityAction EventFlip;
 
 	public static GameObject CreateNewCard (string file_name, Vector3 position, GameObject card_prefab) {
 		if (card_prefab != null) {
@@ -53,8 +49,7 @@ public class Card : NetworkBehaviour {
 		m_holder = false;
 		m_back = Resources.Load<Sprite> ("Card_Back");
 		m_sprite_component = this.GetComponent<SpriteRenderer> ();
-		EventFlip = new NoArgDelegate (FlipEvent);
-		EventZoom = new NoArgDelegate (ChangeSize);
+		EventFlip = new UnityEngine.Events.UnityAction (FlipEvent);
 		m_normal_size = new Vector3 (0.33f, 0.33f, 1);
 		m_blowup_size = new Vector3 (1, 1, 1);
 		if (isClient) {
@@ -134,7 +129,7 @@ public class Card : NetworkBehaviour {
 			Player.s_local_player.CmdAddToHand (this.gameObject, m_filename);
 		}
 		if (Input.GetKeyDown("l")) {
-			GameManager.Instance.RightClickMenu (EventZoom);//new NoArgDelegate (FlipEvent));
+			//GameManager.Instance.RightClickMenu (EventZoom);//new NoArgDelegate (FlipEvent));
 		}
 	}
 
