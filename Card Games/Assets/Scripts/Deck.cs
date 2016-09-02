@@ -53,6 +53,9 @@ public class Deck : NetworkBehaviour {
 		if (Input.GetKeyDown("s") && m_deck.Count > 0) {
 			Player.s_local_player.CmdShuffleDeck (this.gameObject);
 		}
+		if (Input.GetKeyDown("l")) {
+			GameManager.Instance.RightClickMenu ();//new NoArgDelegate (FlipEvent));
+		}
 	}
 
 	public void AddCard (string card) {

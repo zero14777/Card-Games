@@ -2,6 +2,7 @@
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using System.Collections;
+using System.IO;
 
 public class GameManager : NetworkBehaviour {
 
@@ -44,5 +45,21 @@ public class GameManager : NetworkBehaviour {
 
 	public void MoveHoverText () {
 		m_hover_text.transform.position = Input.mousePosition;
+	}
+
+	// Right Click Menus
+
+	public GameObject RCMenu_prefab;
+	public GameObject Button_obj;
+
+	public void RightClickMenu (NoArgDelegate function) {
+		Debug.Log ("asdf");
+		GameObject tempcanvas = GameObject.Find ("Canvas");
+		GameObject menu = Instantiate (RCMenu_prefab);
+		menu.transform.parent = tempcanvas.transform;
+		menu.transform.position = Input.mousePosition;
+		GameObject button = Instantiate (Button_obj);
+		button.transform.parent = menu.transform;
+		button.GetComponent<Button> ().onClick.AddListener (function);
 	}
 }
