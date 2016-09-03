@@ -52,6 +52,8 @@
      <Compile Include="Assets\Scripts\MainMenu.cs" />
      <Compile Include="Assets\Scripts\MyNetworkManager.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
+     <Compile Include="Assets\Scripts\RCMButton.cs" />
+     <Compile Include="Assets\Scripts\RightClickMenu.cs" />
      <Compile Include="Assets\Scripts\SpawnCards.cs" />
      <Compile Include="Assets\Scripts\UICard.cs" />
  <Reference Include="UnityEngine.UI">

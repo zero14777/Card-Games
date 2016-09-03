@@ -65,7 +65,7 @@ public class Deck : NetworkBehaviour {
 		if (Input.GetKeyDown("s") && m_deck.Count > 0) {
 			Player.s_local_player.CmdShuffleDeck (this.gameObject);
 		}
-		if (Input.GetKeyDown("l")) {
+		if (m_hovering && Input.GetMouseButtonDown(1)) {
 			List<Tuple<string, UnityEngine.Events.UnityAction>> functions = new List<Tuple<string, UnityEngine.Events.UnityAction>> ();
 			functions.Add(new Tuple<string, UnityEngine.Events.UnityAction>
 				("Draw", new UnityEngine.Events.UnityAction (Draw)));

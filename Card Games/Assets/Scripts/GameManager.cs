@@ -27,6 +27,7 @@ public class GameManager : NetworkBehaviour {
 
 	void Start () {
 		m_instance = this;
+		m_open_menu = null;
 	}
 
 	// Keep track of players
@@ -59,18 +60,22 @@ public class GameManager : NetworkBehaviour {
 
 	// Right Click Menus
 
-	public GameObject RCMenu_prefab;
-	public GameObject Button_obj;
+	public GameObject m_RCMenu_prefab;
+	public GameObject m_button_obj;
+	private GameObject m_open_menu;
 
 	public void RightClickMenu (List<Tuple<string, UnityEngine.Events.UnityAction>> functions) {
+		if (m_open_menu) {
+			GameObject.Destroy (m_open_menu);
+		}
 		GameObject tempcanvas = GameObject.Find ("Canvas");
-		GameObject menu = Instantiate (RCMenu_prefab);
-		menu.transform.parent = tempcanvas.transform;
-		menu.transform.position = Input.mousePosition;
-		((RectTransform)(menu.transform)).sizeDelta = new Vector2 (200, functions.Count * 40);
+		m_open_menu = Instantiate (m_RCMenu_prefab);
+		m_open_menu.transform.SetParent (tempcanvas.transform);
+		m_open_menu.transform.position = Input.mousePosition;
+		((RectTransform)(m_open_menu.transform)).sizeDelta = new Vector2 (200, functions.Count * 40);
 		foreach (Tuple<string, UnityEngine.Events.UnityAction> function in functions) {
-			GameObject button = Instantiate (Button_obj);
-			button.transform.parent = menu.transform;
+			GameObject button = Instantiate (m_button_obj);
+			button.transform.SetParent (m_open_menu.transform);
 			button.GetComponent<Button> ().onClick.AddListener (function.Function);
 			button.transform.FindChild ("Text").gameObject.GetComponent<Text> ().text = function.Name;
 		}

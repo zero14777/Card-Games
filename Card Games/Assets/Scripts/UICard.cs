@@ -26,7 +26,7 @@ public class UICard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 	}
 
 	public void OnPointerExit (PointerEventData event_data) {
-		m_rectTransform.position = new Vector3 (m_rectTransform.position.x, -(m_rectTransform.rect.height/2), 0);;
+		m_rectTransform.position = new Vector3 (m_rectTransform.position.x, -(m_rectTransform.rect.height/2), 0);
 	}
 
 	public void OnBeginDrag (PointerEventData event_data) {

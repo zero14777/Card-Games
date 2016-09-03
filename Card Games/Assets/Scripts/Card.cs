@@ -193,15 +193,7 @@ public class Card : NetworkBehaviour {
 														new Vector3 (Input.mousePosition.x, Input.mousePosition.y, 
 														(Camera.main.transform.position.z * -1))),
 														Vector2.zero);
-			/*foreach (RaycastHit2D hit in temp) {
-				Debug.Log (hit.transform.gameObject.name);
-				if (hit.transform.gameObject == GameObject.Find ("Hand")) {
-					Player.s_local_player.CmdAddToHand (this.gameObject, m_filename); Dropping to UI layer?
-					return;
-				}
-			}*/
 			foreach (RaycastHit2D hit in temp) {
-				Debug.Log (hit.transform.gameObject.name);
 				if (hit.transform.gameObject == GameObject.Find ("Deck")) {
 					Player.s_local_player.CmdPlaceOnDeck (m_filename, this.gameObject, hit.transform.gameObject);
 					return;
