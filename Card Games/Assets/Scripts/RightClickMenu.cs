@@ -18,9 +18,15 @@ public class RightClickMenu : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
 	public void OnPointerEnter (PointerEventData event_data) {
 		m_over = true;
+		GameManager.Instance.m_over_UI = true;
 	}
 
 	public void OnPointerExit (PointerEventData event_data) {
 		m_over = false;
+		GameManager.Instance.m_over_UI = false;
+	}
+
+	void OnDestroy () {
+		GameManager.Instance.m_over_UI = false;
 	}
 }

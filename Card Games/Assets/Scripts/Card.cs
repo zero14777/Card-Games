@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 
 public class Card : NetworkBehaviour {
+
+	public bool m_hovering = false;
 
 	// References
 	private static GameObject m_card_prefab;
@@ -103,16 +106,25 @@ public class Card : NetworkBehaviour {
 	// Hotkeys
 
 	void OnMouseEnter () {
+		m_hovering = true;
 		string hover_text = "F - Flip Card\nA - Add to Hand\n";
 		if (m_upright) {
 			hover_text = hover_text + "Z - Zoom\n";
 		}
-				
 		GameManager.Instance.SetHoverText (hover_text);
 	}
 
 	void OnMouseExit () {
+		m_hovering = false;
 		GameManager.Instance.SetHoverText ("");
+	}
+
+	void DoFlip () {
+		Player.s_local_player.CmdFlip (this.gameObject);
+	}
+
+	void Draw () {
+		Player.s_local_player.CmdAddToHand (this.gameObject, m_filename);
 	}
 
 	void OnMouseOver () {
@@ -122,14 +134,24 @@ public class Card : NetworkBehaviour {
 		}
 
 		if (Input.GetKeyDown("f")) {
-			Player.s_local_player.CmdFlip (this.gameObject);
+			DoFlip ();
 		}
 
 		if (Input.GetKeyDown("a")) {
-			Player.s_local_player.CmdAddToHand (this.gameObject, m_filename);
+			Draw ();
 		}
-		if (Input.GetKeyDown("l")) {
-			//GameManager.Instance.RightClickMenu (EventZoom);//new NoArgDelegate (FlipEvent));
+		if (m_hovering && Input.GetMouseButtonDown(1)) {
+			List<Tuple<string, UnityEngine.Events.UnityAction>> functions = 
+				new List<Tuple<string, UnityEngine.Events.UnityAction>> ();
+			if (m_upright) {
+				functions.Add (new Tuple<string, UnityEngine.Events.UnityAction>
+					("Zoom", new UnityEngine.Events.UnityAction (ChangeSize)));
+			}
+			functions.Add(new Tuple<string, UnityEngine.Events.UnityAction>
+				("Draw", new UnityEngine.Events.UnityAction (Draw)));
+			functions.Add(new Tuple<string, UnityEngine.Events.UnityAction>
+				("Flip", new UnityEngine.Events.UnityAction (DoFlip)));
+			GameManager.Instance.RightClickMenu (functions);
 		}
 	}
 
@@ -181,7 +203,7 @@ public class Card : NetworkBehaviour {
 	// Dragging & Dropping
 
 	void OnMouseDown () {
-		if (!m_held) {
+		if (!m_held && !GameManager.Instance.m_over_UI) {
 			Player.s_local_player.CmdGrab (this.gameObject);
 			m_holder = true;
 		}

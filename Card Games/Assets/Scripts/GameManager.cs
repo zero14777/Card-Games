@@ -23,11 +23,16 @@ public class GameManager : NetworkBehaviour {
 		get { return m_instance; }
 	}
 
+	// Used to check if the curser is currently over UI
+	public bool m_over_UI;
+
+
 	// Set Values
 
 	void Start () {
 		m_instance = this;
 		m_open_menu = null;
+		m_over_UI = false;
 	}
 
 	// Keep track of players

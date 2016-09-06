@@ -23,10 +23,12 @@ public class UICard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
 	public void OnPointerEnter (PointerEventData event_data) {
 		m_rectTransform.position = new Vector3 (m_rectTransform.position.x, 0, 0);
+		GameManager.Instance.m_over_UI = true;
 	}
 
 	public void OnPointerExit (PointerEventData event_data) {
 		m_rectTransform.position = new Vector3 (m_rectTransform.position.x, -(m_rectTransform.rect.height/2), 0);
+		GameManager.Instance.m_over_UI = false;
 	}
 
 	public void OnBeginDrag (PointerEventData event_data) {
@@ -44,5 +46,9 @@ public class UICard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 												new Vector3 (Input.mousePosition.x, Input.mousePosition.y,
 												(Camera.main.transform.position.z * -1))));
 		GameObject.Destroy (this.gameObject);
+	}
+
+	void OnDestroy () {
+		GameManager.Instance.m_over_UI = false;
 	}
 }
