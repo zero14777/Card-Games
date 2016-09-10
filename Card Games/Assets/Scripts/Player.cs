@@ -40,6 +40,7 @@ public class Player : NetworkBehaviour {
 	[Command]
 	private void CmdSetName (string name) {
 		m_player_name = name;
+		PlayLog.Instance.LogEvent (m_player_name + " Joined");
 	}
 
 	/// <summary>
@@ -62,6 +63,13 @@ public class Player : NetworkBehaviour {
 				Card.CreateNewCard (card, new Vector3 (0, 0, 0), m_card_prefab);  // Make cards drop to a more convenient spot !
 			}
 		}
+	}
+
+	// Send a message to the chat/play log
+
+	[Command]
+	public void CmdSendMessage (string message) {
+		PlayLog.Instance.LogEvent (m_player_name + ": " + message);
 	}
 
 	// Hand interactions
@@ -98,14 +106,17 @@ public class Player : NetworkBehaviour {
 		RpcNewHandCard (card);
 		Destroy (card_obj);
 		GameManager.Instance.RpcUpdatePlayersList ();
+		PlayLog.Instance.LogEvent (m_player_name + " took a card from the table.");
 	}
 
 	[Command]
 	public void CmdDrawToHand (GameObject deck_obj) {
-		string card = deck_obj.GetComponent<Deck> ().GetTopCard();
+		Deck draw_deck = deck_obj.GetComponent<Deck> ();
+		string card = draw_deck.GetTopCard();
 		m_hand.Add (card);
 		RpcNewHandCard (card);
 		GameManager.Instance.RpcUpdatePlayersList ();
+		PlayLog.Instance.LogEvent (m_player_name + " drew a card from " + draw_deck.m_name + "."); // ! specify deck
 	}
 
 	/// <summary>
@@ -121,6 +132,7 @@ public class Player : NetworkBehaviour {
 		m_hand.Remove (card);
 		Card.CreateNewCard (card, drop_position, m_card_prefab);
 		GameManager.Instance.RpcUpdatePlayersList ();
+		PlayLog.Instance.LogEvent (m_player_name + " dropped " + card + " from their hand.");
 	}
 
 	[Command]
@@ -128,17 +140,22 @@ public class Player : NetworkBehaviour {
 		string card = deck_obj.GetComponent<Deck> ().GetTopCard();
 		GameObject new_card_obj = Card.CreateNewCard (card, drop_position, m_card_prefab);
 		new_card_obj.GetComponent<Card> ().Flip ();
+		PlayLog.Instance.LogEvent (m_player_name + " revealed " + card + ".");
 	}
 
 	[Command]
-	public void CmdPlaceOnDeck (string card, GameObject card_obj, GameObject deck_obj) { //!
-		deck_obj.GetComponent<Deck> ().AddCard (card);
+	public void CmdPlaceOnDeck (string card, GameObject card_obj, GameObject deck_obj) {
+		Deck place_deck = deck_obj.GetComponent<Deck> ();
+		place_deck.AddCard (card);
 		Destroy (card_obj);
+		PlayLog.Instance.LogEvent (m_player_name + " placed a card on " + place_deck.m_name + ".");
 	}
 
 	[Command]
 	public void CmdShuffleDeck (GameObject deck_obj) {
-		deck_obj.GetComponent<Deck> ().ShuffleDeck ();
+		Deck suffle_deck = deck_obj.GetComponent<Deck> ();
+		suffle_deck.GetComponent<Deck> ().ShuffleDeck ();
+		PlayLog.Instance.LogEvent (m_player_name + " shuffled " + suffle_deck.m_name + ".");
 	}
 
 	// Flipping Cards
@@ -153,6 +170,7 @@ public class Player : NetworkBehaviour {
 	public void CmdFlip (GameObject card_obj) {
 		Card card = card_obj.GetComponent<Card> ();
 		card.Flip ();
+		PlayLog.Instance.LogEvent (m_player_name + " flipped " + card.m_filename + ".");
 	}
 
 	// Dragging & Dropping

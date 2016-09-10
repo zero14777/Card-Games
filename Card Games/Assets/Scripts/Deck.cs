@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class Deck : NetworkBehaviour {
 
+	public string m_name = "deck";
 	public bool m_hovering = false;
 	public SyncListString m_deck = new SyncListString ();
 

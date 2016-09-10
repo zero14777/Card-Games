@@ -36,7 +36,7 @@ public class Board : MonoBehaviour {
 		}
 
 		if (Input.GetKeyDown ("r")) {
-			Camera.main.transform.position = new Vector3 (0, 0, Camera.main.transform.position.z);
+			Camera.main.transform.position = new Vector3 (0, 0, Camera.main.transform.position.z); //! This seems to autosync
 		}
 
 		if (Input.GetAxis ("Mouse ScrollWheel") > 0f && Camera.main.transform.position.z < -10) { // forward
