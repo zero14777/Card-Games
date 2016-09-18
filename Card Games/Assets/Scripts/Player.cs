@@ -7,6 +7,8 @@ using System.Collections.Generic;
 /// <summary>
 /// Contains data for each player. A new player object is created for each client
 /// connected.
+/// 
+/// Calling commands is the only way for clients to interact with the server.
 /// </summary>
 public class Player : NetworkBehaviour {
 
@@ -171,6 +173,13 @@ public class Player : NetworkBehaviour {
 		Card card = card_obj.GetComponent<Card> ();
 		card.Flip ();
 		PlayLog.Instance.LogEvent (m_player_name + " flipped " + card.m_filename + ".");
+	}
+
+	[Command]
+	public void CmdRotate (GameObject card_obj, float angle) {
+		Card card = card_obj.GetComponent<Card> ();
+		card.m_rotation = card.m_rotation + angle;
+		PlayLog.Instance.LogEvent (m_player_name + " rotated " + card.m_filename + ".");
 	}
 
 	// Dragging & Dropping

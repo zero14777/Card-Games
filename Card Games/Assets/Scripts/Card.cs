@@ -21,6 +21,8 @@ public class Card : NetworkBehaviour {
 	private Vector3 m_normal_size;
 	public Vector3 m_blowup_size;
 	private int m_lerp_time = 15;
+	[SyncVar(hook="DoRotation")]
+	public float m_rotation;
 
 	// Dragging & Dropping
 	[SyncVar]
@@ -66,6 +68,12 @@ public class Card : NetworkBehaviour {
 			m_sprite_component.sprite = m_front;
 		} else {
 			m_sprite_component.sprite = m_back;
+		}
+		if (isServer) {
+			m_rotation = 0.0f;
+		}
+		if (isClient) {
+			transform.rotation = Quaternion.Euler (new Vector3 (0, 0, m_rotation));
 		}
 	}
 
@@ -127,6 +135,18 @@ public class Card : NetworkBehaviour {
 		Player.s_local_player.CmdAddToHand (this.gameObject, m_filename);
 	}
 
+	void RotateLeft () {
+		Player.s_local_player.CmdRotate (this.gameObject, 90.0f);
+	}
+
+	void RotateRight () {
+		Player.s_local_player.CmdRotate (this.gameObject, -90.0f);
+	}
+
+	void DoRotation (float rotation) {
+		transform.rotation = Quaternion.Euler (new Vector3 (0, 0, rotation));
+	}
+
 	void OnMouseOver () {
 		GameManager.Instance.MoveHoverText ();
 		if (m_upright && Input.GetKeyDown("z")) {
@@ -151,6 +171,10 @@ public class Card : NetworkBehaviour {
 				("Draw", new UnityEngine.Events.UnityAction (Draw)));
 			functions.Add(new Tuple<string, UnityEngine.Events.UnityAction>
 				("Flip", new UnityEngine.Events.UnityAction (DoFlip)));
+			functions.Add(new Tuple<string, UnityEngine.Events.UnityAction>
+				("Rotate Left", new UnityEngine.Events.UnityAction (RotateLeft)));
+			functions.Add(new Tuple<string, UnityEngine.Events.UnityAction>
+				("Rotate Right", new UnityEngine.Events.UnityAction (RotateRight)));
 			GameManager.Instance.RightClickMenu (functions);
 		}
 	}
