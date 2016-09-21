@@ -33,12 +33,10 @@ public class Card : NetworkBehaviour {
 	[SyncVar]
 	public Vector3 m_drag_transform;
 
-	// Flipping
-	//public delegate void NoArgDelegate ();
 	[SyncEvent]
 	public event UnityEngine.Events.UnityAction EventFlip;
 
-	public static GameObject CreateNewCard (string file_name, Vector3 position, GameObject card_prefab) {
+	public static GameObject CreateNewCard (string file_name, Vector3 position, GameObject card_prefab, float rotation = 0) {
 		if (card_prefab != null) {
 			m_card_prefab = card_prefab;
 		}
@@ -46,11 +44,12 @@ public class Card : NetworkBehaviour {
 		Card card_component = new_card.GetComponent<Card> ();
 		card_component.m_filename = file_name;
 		card_component.LoadFront ();
+		card_component.m_rotation = rotation;
 		NetworkServer.Spawn (new_card);
 		return new_card;
 	}
 
-	void Start () {
+	private void Start () {
 		m_holder = false;
 		m_back = Resources.Load<Sprite> ("Card_Back");
 		m_sprite_component = this.GetComponent<SpriteRenderer> ();
@@ -68,9 +67,6 @@ public class Card : NetworkBehaviour {
 			m_sprite_component.sprite = m_front;
 		} else {
 			m_sprite_component.sprite = m_back;
-		}
-		if (isServer) {
-			m_rotation = 0.0f;
 		}
 		if (isClient) {
 			transform.rotation = Quaternion.Euler (new Vector3 (0, 0, m_rotation));
@@ -111,43 +107,15 @@ public class Card : NetworkBehaviour {
 		m_front = GenerateSprite (bytes);
 	}
 
-	// Hotkeys
-
-	void OnMouseEnter () {
-		m_hovering = true;
-		string hover_text = "F - Flip Card\nA - Add to Hand\n";
-		if (m_upright) {
-			hover_text = hover_text + "Z - Zoom\n";
-		}
-		GameManager.Instance.SetHoverText (hover_text);
+	public static string FormatName (string filename) {
+		string name = Path.GetFileNameWithoutExtension (filename);
+		name.Replace ("_", " ");
+		return name;
 	}
 
-	void OnMouseExit () {
-		m_hovering = false;
-		GameManager.Instance.SetHoverText ("");
-	}
+	// Keeps track of cursor and hover text
 
-	void DoFlip () {
-		Player.s_local_player.CmdFlip (this.gameObject);
-	}
-
-	void Draw () {
-		Player.s_local_player.CmdAddToHand (this.gameObject, m_filename);
-	}
-
-	void RotateLeft () {
-		Player.s_local_player.CmdRotate (this.gameObject, 90.0f);
-	}
-
-	void RotateRight () {
-		Player.s_local_player.CmdRotate (this.gameObject, -90.0f);
-	}
-
-	void DoRotation (float rotation) {
-		transform.rotation = Quaternion.Euler (new Vector3 (0, 0, rotation));
-	}
-
-	void OnMouseOver () {
+	private void OnMouseOver () {
 		GameManager.Instance.MoveHoverText ();
 		if (m_upright && Input.GetKeyDown("z")) {
 			ChangeSize ();
@@ -179,7 +147,57 @@ public class Card : NetworkBehaviour {
 		}
 	}
 
-	// Card Zoom
+	private void OnMouseEnter () {
+		m_hovering = true;
+		string hover_text = "F - Flip Card\nA - Add to Hand\n";
+		if (m_upright) {
+			hover_text = hover_text + "Z - Zoom\n";
+		}
+		GameManager.Instance.SetHoverText (hover_text);
+	}
+
+	private void OnMouseExit () {
+		m_hovering = false;
+		GameManager.Instance.SetHoverText ("");
+	}
+
+	private void OnDestroy () {
+		if (m_hovering) {
+			OnMouseExit ();
+		}
+	}
+
+	// Actions Cards object can perform
+
+	private void ChangeSize () {
+		if (m_blownup) {
+			Shrink ();
+		} else {
+			Blowup ();
+		}
+	}
+
+	private void DoFlip () {
+		Player.s_local_player.CmdFlip (this.gameObject);
+	}
+
+	private void Draw () {
+		Player.s_local_player.CmdAddToHand (this.gameObject);
+	}
+
+	private void RotateLeft () {
+		Player.s_local_player.CmdRotate (this.gameObject, 90.0f);
+	}
+
+	private void RotateRight () {
+		Player.s_local_player.CmdRotate (this.gameObject, -90.0f);
+	}
+
+	private void DoRotation (float rotation) {
+		transform.rotation = Quaternion.Euler (new Vector3 (0, 0, rotation));
+	}
+
+	// Card Zoom (Client side only)
 
 	private void Blowup () {
 		transform.localScale = m_blowup_size;
@@ -189,14 +207,6 @@ public class Card : NetworkBehaviour {
 	private void Shrink () {
 		transform.localScale = m_normal_size;
 		m_blownup = false;
-	}
-
-	private void ChangeSize () {
-		if (m_blownup) {
-			Shrink ();
-		} else {
-			Blowup ();
-		}
 	}
 
 	// Card Flipping
@@ -218,6 +228,9 @@ public class Card : NetworkBehaviour {
 		} else {
 			FlipUp ();
 		}
+		if (m_hovering) {
+			OnMouseEnter ();
+		}
 	}
 
 	public void Flip () {
@@ -226,14 +239,14 @@ public class Card : NetworkBehaviour {
 
 	// Dragging & Dropping
 
-	void OnMouseDown () {
+	private void OnMouseDown () {
 		if (!m_held && !GameManager.Instance.m_over_UI) {
 			Player.s_local_player.CmdGrab (this.gameObject);
 			m_holder = true;
 		}
 	}
 
-	void OnMouseUp () {
+	private void OnMouseUp () {
 		if (m_holder) {
 			RaycastHit2D[] temp = Physics2D.RaycastAll (Camera.main.ScreenToWorldPoint (
 														new Vector3 (Input.mousePosition.x, Input.mousePosition.y, 
@@ -250,7 +263,7 @@ public class Card : NetworkBehaviour {
 		}
 	}
 
-	void OnMouseDrag () {
+	private void OnMouseDrag () {
 		if (m_holder) {
 			Vector3 drag_pos = Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x,
 																Input.mousePosition.y,
@@ -260,7 +273,7 @@ public class Card : NetworkBehaviour {
 		}
 	}
 
-	void FixedUpdate () {
+	private void FixedUpdate () {
 		if (m_held && !m_holder) {
 			transform.position = Vector3.Lerp (transform.position, m_drag_transform, Time.deltaTime * m_lerp_time);
 		}

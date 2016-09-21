@@ -9,53 +9,9 @@ public class Deck : NetworkBehaviour {
 	public bool m_hovering = false;
 	public SyncListString m_deck = new SyncListString ();
 
+	// Keeps track of cursor and hover text
 
-	void UpdateHoverText () {
-		if (m_hovering) {
-			GameManager.Instance.SetHoverText ("Cards: " + m_deck.Count + "\n" +
-			"D - Draw\n" +
-			"R - Reveal\n" +
-			"S - Shuffle\n");
-		} else {
-			GameManager.Instance.SetHoverText ("");
-		}
-	}
-
-	/// <summary>
-	/// Should be called whenever something happens to the deck that
-	/// changes the hover text. Will update the hovertext for any clients
-	/// currently hover over this deck.
-	/// </summary>
-	[ClientRpc]
-	void RpcUpdateHoverText () {
-		UpdateHoverText ();
-	}
-
-	void OnMouseEnter () {
-		m_hovering = true;
-		UpdateHoverText ();
-	}
-
-	void OnMouseExit () {
-		m_hovering = false;
-		UpdateHoverText ();
-	}
-
-	void Draw () {
-		Player.s_local_player.CmdDrawToHand (this.gameObject);
-	}
-
-	void Reveal () {
-		Player.s_local_player.CmdReveal (this.gameObject, Camera.main.ScreenToWorldPoint 
-			(new Vector3 (Input.mousePosition.x, Input.mousePosition.y,
-			(Camera.main.transform.position.z * -1))));
-	}
-
-	void Shuffle () {
-		Player.s_local_player.CmdShuffleDeck (this.gameObject);
-	}
-
-	void OnMouseOver () {
+	private void OnMouseOver () {
 		GameManager.Instance.MoveHoverText ();
 		if (Input.GetKeyDown("d") && m_deck.Count > 0) {
 			Draw ();
@@ -77,6 +33,59 @@ public class Deck : NetworkBehaviour {
 			GameManager.Instance.RightClickMenu (functions);
 		}
 	}
+
+	private void OnMouseEnter () {
+		m_hovering = true;
+		UpdateHoverText ();
+	}
+
+	private void OnMouseExit () {
+		m_hovering = false;
+		UpdateHoverText ();
+	}
+
+	private void OnDestroy () {
+		OnMouseExit ();
+	}
+
+	private void UpdateHoverText () {
+		if (m_hovering) {
+			GameManager.Instance.SetHoverText ("Cards: " + m_deck.Count + "\n" +
+			"D - Draw\n" +
+			"R - Reveal\n" +
+			"S - Shuffle\n");
+		} else {
+			GameManager.Instance.SetHoverText ("");
+		}
+	}
+
+	/// <summary>
+	/// Should be called whenever something happens to the deck that
+	/// changes the hover text. Will update the hovertext for any clients
+	/// currently hover over this deck.
+	/// </summary>
+	[ClientRpc]
+	private void RpcUpdateHoverText () {
+		UpdateHoverText ();
+	}
+
+	// Actions Decks object can perform
+
+	private void Draw () {
+		Player.s_local_player.CmdDrawToHand (this.gameObject);
+	}
+
+	private void Reveal () {
+		Player.s_local_player.CmdReveal (this.gameObject, Camera.main.ScreenToWorldPoint 
+			(new Vector3 (Input.mousePosition.x, Input.mousePosition.y,
+			(Camera.main.transform.position.z * -1))));
+	}
+
+	private void Shuffle () {
+		Player.s_local_player.CmdShuffleDeck (this.gameObject);
+	}
+
+	// Core Deck functionality
 
 	public void AddCard (string card) {
 		m_deck.Add (card);

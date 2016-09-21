@@ -4,6 +4,7 @@ using System.Collections;
 public class Board : MonoBehaviour {
 
 	public static bool s_no_drag = false;
+	public static float s_rotation = 0;
 
 	private Vector3 m_drag_point;
 	private Vector3 m_camera_orig;
@@ -39,10 +40,12 @@ public class Board : MonoBehaviour {
 
 		if (Input.GetKeyDown ("q")) {
 			Camera.main.transform.Rotate (new Vector3 (0, 0, -90));
+			s_rotation -= 90;
 		}
 
 		if (Input.GetKeyDown ("e")) {
 			Camera.main.transform.Rotate (new Vector3 (0, 0, 90));
+			s_rotation += 90;
 		}
 		if (!m_dragging) {
 			if (Input.GetKeyDown ("r")) {

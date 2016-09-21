@@ -103,12 +103,17 @@ public class Player : NetworkBehaviour {
 	/// <param name="card">A string that designates which
 	/// image in the Cards folder is associated with this card.</param>
 	[Command]
-	public void CmdAddToHand (GameObject card_obj, string card) {
-		m_hand.Add (card);
-		RpcNewHandCard (card);
+	public void CmdAddToHand (GameObject card_obj) {
+		Card card = card_obj.GetComponent<Card> ();
+		m_hand.Add (card.m_filename);
+		RpcNewHandCard (card.m_filename);
+		if (card.m_upright) {
+			PlayLog.Instance.LogEvent (m_player_name + " took " + Card.FormatName (card.m_filename) + " from the table.");
+		} else {
+			PlayLog.Instance.LogEvent (m_player_name + " took a card from the table.");
+		}
 		Destroy (card_obj);
 		GameManager.Instance.RpcUpdatePlayersList ();
-		PlayLog.Instance.LogEvent (m_player_name + " took a card from the table.");
 	}
 
 	[Command]
@@ -117,8 +122,8 @@ public class Player : NetworkBehaviour {
 		string card = draw_deck.GetTopCard();
 		m_hand.Add (card);
 		RpcNewHandCard (card);
+		PlayLog.Instance.LogEvent (m_player_name + " drew a card from " + draw_deck.m_name + ".");
 		GameManager.Instance.RpcUpdatePlayersList ();
-		PlayLog.Instance.LogEvent (m_player_name + " drew a card from " + draw_deck.m_name + "."); // ! specify deck
 	}
 
 	/// <summary>
@@ -130,11 +135,11 @@ public class Player : NetworkBehaviour {
 	/// <param name="drop_position">The position at which to generate
 	/// a the new card object.</param>
 	[Command]
-	public void CmdDropFromHand (string card, Vector3 drop_position) {
+	public void CmdDropFromHand (string card, Vector3 drop_position, float drop_rotation) {
 		m_hand.Remove (card);
-		Card.CreateNewCard (card, drop_position, m_card_prefab);
+		GameObject new_card = Card.CreateNewCard (card, drop_position, m_card_prefab, drop_rotation);
+		PlayLog.Instance.LogEvent (m_player_name + " dropped a card from their hand.");
 		GameManager.Instance.RpcUpdatePlayersList ();
-		PlayLog.Instance.LogEvent (m_player_name + " dropped " + card + " from their hand.");
 	}
 
 	[Command]
@@ -142,7 +147,7 @@ public class Player : NetworkBehaviour {
 		string card = deck_obj.GetComponent<Deck> ().GetTopCard();
 		GameObject new_card_obj = Card.CreateNewCard (card, drop_position, m_card_prefab);
 		new_card_obj.GetComponent<Card> ().Flip ();
-		PlayLog.Instance.LogEvent (m_player_name + " revealed " + card + ".");
+		PlayLog.Instance.LogEvent (m_player_name + " revealed " + Card.FormatName (card) + ".");
 	}
 
 	[Command]
@@ -172,14 +177,14 @@ public class Player : NetworkBehaviour {
 	public void CmdFlip (GameObject card_obj) {
 		Card card = card_obj.GetComponent<Card> ();
 		card.Flip ();
-		PlayLog.Instance.LogEvent (m_player_name + " flipped " + card.m_filename + ".");
+		PlayLog.Instance.LogEvent (m_player_name + " flipped " + Card.FormatName ( card.m_filename ) + ".");
 	}
 
 	[Command]
 	public void CmdRotate (GameObject card_obj, float angle) {
 		Card card = card_obj.GetComponent<Card> ();
 		card.m_rotation = card.m_rotation + angle;
-		PlayLog.Instance.LogEvent (m_player_name + " rotated " + card.m_filename + ".");
+		PlayLog.Instance.LogEvent (m_player_name + " rotated " + Card.FormatName ( card.m_filename ) + ".");
 	}
 
 	// Dragging & Dropping
