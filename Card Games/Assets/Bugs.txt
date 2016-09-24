@@ -1,0 +1,7 @@
+If a player disconnects by closing their client the list of players does not update immediatly, but cards do eventually get dropped.
+the top player on the list always has the name player.
+cards should be droppable from the hand onto the deck.
+
+Current update:
+making own menu UI
+Also making disconnect button
