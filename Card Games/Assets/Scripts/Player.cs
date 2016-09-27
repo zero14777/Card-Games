@@ -45,6 +45,14 @@ public class Player : NetworkBehaviour {
 		PlayLog.Instance.LogEvent (m_player_name + " Joined");
 	}
 
+	[Command]
+	public void CmdCreateCard (string card) {
+		m_hand.Remove (card);
+		GameObject new_card = Card.CreateNewCard (card, new Vector3(0, 0, 0), m_card_prefab);
+		CmdFlip (new_card);
+		PlayLog.Instance.LogEvent (m_player_name + " added a " + card + " card to the game.");
+	}
+
 	/// <summary>
 	/// Automatically sets up the local client player object.
 	/// </summary>
@@ -137,7 +145,7 @@ public class Player : NetworkBehaviour {
 	[Command]
 	public void CmdDropFromHand (string card, Vector3 drop_position, float drop_rotation) {
 		m_hand.Remove (card);
-		GameObject new_card = Card.CreateNewCard (card, drop_position, m_card_prefab, drop_rotation);
+		Card.CreateNewCard (card, drop_position, m_card_prefab, drop_rotation);
 		PlayLog.Instance.LogEvent (m_player_name + " dropped a card from their hand.");
 		GameManager.Instance.RpcUpdatePlayersList ();
 	}
@@ -164,7 +172,7 @@ public class Player : NetworkBehaviour {
 		suffle_deck.GetComponent<Deck> ().ShuffleDeck ();
 		PlayLog.Instance.LogEvent (m_player_name + " shuffled " + suffle_deck.m_name + ".");
 	}
-
+		
 	// Flipping Cards
 
 	/// <summary>
@@ -184,7 +192,7 @@ public class Player : NetworkBehaviour {
 	public void CmdRotate (GameObject card_obj, float angle) {
 		Card card = card_obj.GetComponent<Card> ();
 		card.m_rotation = card.m_rotation + angle;
-		PlayLog.Instance.LogEvent (m_player_name + " rotated " + Card.FormatName ( card.m_filename ) + ".");
+		//PlayLog.Instance.LogEvent (m_player_name + " rotated " + Card.FormatName ( card.m_filename ) + ".");
 	}
 
 	// Dragging & Dropping
