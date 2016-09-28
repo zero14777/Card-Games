@@ -28,7 +28,7 @@ public class Card : NetworkBehaviour {
 	[SyncVar]
 	public bool m_held;
 	[SyncVar]
-	public bool m_upright = false;
+	public bool m_upright;
 	private bool m_holder;
 	[SyncVar]
 	public Vector3 m_drag_transform;
@@ -36,7 +36,7 @@ public class Card : NetworkBehaviour {
 	[SyncEvent]
 	public event UnityEngine.Events.UnityAction EventFlip;
 
-	public static GameObject CreateNewCard (string file_name, Vector3 position, GameObject card_prefab, float rotation = 0) {
+	public static GameObject CreateNewCard (string file_name, bool upright, Vector3 position, GameObject card_prefab, float rotation = 0) {
 		if (card_prefab != null) {
 			m_card_prefab = card_prefab;
 		}
@@ -45,6 +45,7 @@ public class Card : NetworkBehaviour {
 		card_component.m_filename = file_name;
 		card_component.LoadFront ();
 		card_component.m_rotation = rotation;
+		card_component.m_upright = upright;
 		NetworkServer.Spawn (new_card);
 		return new_card;
 	}
@@ -109,7 +110,6 @@ public class Card : NetworkBehaviour {
 
 	public static string FormatName (string filename) {
 		string name = Path.GetFileNameWithoutExtension (filename);
-		name.Replace ("_", " ");
 		return name;
 	}
 

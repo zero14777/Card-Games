@@ -85,4 +85,23 @@ public class GameManager : NetworkBehaviour {
 			button.transform.FindChild ("Text").gameObject.GetComponent<Text> ().text = function.Name;
 		}
 	}
+
+	// Search Addable Cards
+
+	public InputField m_search_input_field;
+	public Transform m_Card_List;
+
+	public void CardSearch () {
+		string asdf = "";
+		foreach (Transform child in m_Card_List)
+		{
+			if (child.gameObject.GetComponent<CardSpawner> ().m_card.Contains (m_search_input_field.text)) {
+				child.gameObject.SetActive (true);
+				asdf = asdf + child.gameObject.GetComponent<CardSpawner> ().m_card;
+			} else {
+				child.gameObject.SetActive (false);
+			}
+		}
+		Debug.Log (asdf);
+	}
 }

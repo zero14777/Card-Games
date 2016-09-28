@@ -48,9 +48,8 @@ public class Player : NetworkBehaviour {
 	[Command]
 	public void CmdCreateCard (string card) {
 		m_hand.Remove (card);
-		GameObject new_card = Card.CreateNewCard (card, new Vector3(0, 0, 0), m_card_prefab);
-		CmdFlip (new_card);
-		PlayLog.Instance.LogEvent (m_player_name + " added a " + card + " card to the game.");
+		Card.CreateNewCard (card, true, new Vector3(0, 0, 0), m_card_prefab);
+		PlayLog.Instance.LogEvent (m_player_name + " added a " + Card.FormatName (card) + " card to the game.");
 	}
 
 	/// <summary>
@@ -70,7 +69,7 @@ public class Player : NetworkBehaviour {
 	public override void OnNetworkDestroy () {
 		if (isServer) {
 			foreach (string card in m_hand) {
-				Card.CreateNewCard (card, new Vector3 (0, 0, 0), m_card_prefab);  // Make cards drop to a more convenient spot !
+				Card.CreateNewCard (card, false, new Vector3 (0, 0, 0), m_card_prefab);  // Make cards drop to a more convenient spot !
 			}
 		}
 	}
@@ -145,7 +144,7 @@ public class Player : NetworkBehaviour {
 	[Command]
 	public void CmdDropFromHand (string card, Vector3 drop_position, float drop_rotation) {
 		m_hand.Remove (card);
-		Card.CreateNewCard (card, drop_position, m_card_prefab, drop_rotation);
+		Card.CreateNewCard (card, false, drop_position, m_card_prefab, drop_rotation);
 		PlayLog.Instance.LogEvent (m_player_name + " dropped a card from their hand.");
 		GameManager.Instance.RpcUpdatePlayersList ();
 	}
@@ -153,8 +152,7 @@ public class Player : NetworkBehaviour {
 	[Command]
 	public void CmdReveal (GameObject deck_obj, Vector3 drop_position) {
 		string card = deck_obj.GetComponent<Deck> ().GetTopCard();
-		GameObject new_card_obj = Card.CreateNewCard (card, drop_position, m_card_prefab);
-		new_card_obj.GetComponent<Card> ().Flip ();
+		Card.CreateNewCard (card, true, drop_position, m_card_prefab);
 		PlayLog.Instance.LogEvent (m_player_name + " revealed " + Card.FormatName (card) + ".");
 	}
 
@@ -192,7 +190,6 @@ public class Player : NetworkBehaviour {
 	public void CmdRotate (GameObject card_obj, float angle) {
 		Card card = card_obj.GetComponent<Card> ();
 		card.m_rotation = card.m_rotation + angle;
-		//PlayLog.Instance.LogEvent (m_player_name + " rotated " + Card.FormatName ( card.m_filename ) + ".");
 	}
 
 	// Dragging & Dropping

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 
-public class UICard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
+public class UICard : OverUI, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
 	private RectTransform m_rectTransform;
 
@@ -15,12 +15,12 @@ public class UICard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
 	// Mouse Over
 
-	public void OnPointerEnter (PointerEventData event_data) {
+	public override void OnPointerEnter (PointerEventData event_data) {
 		m_rectTransform.position = new Vector3 (m_rectTransform.position.x, 0, 0);
 		GameManager.Instance.m_over_UI = true;
 	}
 
-	public void OnPointerExit (PointerEventData event_data) {
+	public override void OnPointerExit (PointerEventData event_data) {
 		m_rectTransform.position = new Vector3 (m_rectTransform.position.x, -(m_rectTransform.rect.height/2), 0);
 		GameManager.Instance.m_over_UI = false;
 	}

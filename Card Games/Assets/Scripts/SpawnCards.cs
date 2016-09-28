@@ -21,7 +21,7 @@ public class SpawnCards : MonoBehaviour {
 			new_card_spawner.transform.SetParent(card_spawner_menu.transform);
 			byte[] bytes = System.IO.File.ReadAllBytes (Application.dataPath + "/../Cards/" + file.Name);
 			new_card_spawner.GetComponent<Image> ().sprite = Card.GenerateSprite (bytes);
-			new_card_spawner.GetComponent<CardSpawner> ().card = file.Name;
+			new_card_spawner.GetComponent<CardSpawner> ().m_card = file.Name;
 		}
 	}
 }
