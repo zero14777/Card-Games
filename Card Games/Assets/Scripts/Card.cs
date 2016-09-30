@@ -4,12 +4,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
-public class Card : NetworkBehaviour {
+public class Card : Draggable {
 
 	public bool m_hovering = false;
 
 	// References
-	private static GameObject m_card_prefab;
 	private SpriteRenderer m_sprite_component;
 	public Sprite m_front;
 
@@ -20,27 +19,16 @@ public class Card : NetworkBehaviour {
 	private bool m_blownup = false;
 	private Vector3 m_normal_size;
 	public Vector3 m_blowup_size;
-	private int m_lerp_time = 15;
 	[SyncVar(hook="DoRotation")]
 	public float m_rotation;
-
-	// Dragging & Dropping
-	[SyncVar]
-	public bool m_held;
 	[SyncVar]
 	public bool m_upright;
-	private bool m_holder;
-	[SyncVar]
-	public Vector3 m_drag_transform;
 
 	[SyncEvent]
 	public event UnityEngine.Events.UnityAction EventFlip;
 
-	public static GameObject CreateNewCard (string file_name, bool upright, Vector3 position, GameObject card_prefab, float rotation = 0) {
-		if (card_prefab != null) {
-			m_card_prefab = card_prefab;
-		}
-		GameObject new_card = (GameObject)Instantiate (m_card_prefab, position, Quaternion.identity);
+	public static GameObject CreateNewCard (string file_name, bool upright, Vector3 position, float rotation = 0) {
+		GameObject new_card = (GameObject)Instantiate (GameManager.Instance.m_card_prefab, position, Quaternion.identity);
 		Card card_component = new_card.GetComponent<Card> ();
 		card_component.m_filename = file_name;
 		card_component.LoadFront ();
@@ -239,43 +227,20 @@ public class Card : NetworkBehaviour {
 
 	// Dragging & Dropping
 
-	private void OnMouseDown () {
-		if (!m_held && !GameManager.Instance.m_over_UI) {
-			Player.s_local_player.CmdGrab (this.gameObject);
-			m_holder = true;
-		}
-	}
-
-	private void OnMouseUp () {
+	protected override void OnMouseUp () {
 		if (m_holder) {
 			RaycastHit2D[] temp = Physics2D.RaycastAll (Camera.main.ScreenToWorldPoint (
-														new Vector3 (Input.mousePosition.x, Input.mousePosition.y, 
-														(Camera.main.transform.position.z * -1))),
-														Vector2.zero);
+				new Vector3 (Input.mousePosition.x, Input.mousePosition.y, 
+					(Camera.main.transform.position.z * -1))),
+				Vector2.zero);
 			foreach (RaycastHit2D hit in temp) {
-				if (hit.transform.gameObject == GameObject.Find ("Deck")) {
+				if (hit.transform.gameObject.GetComponent<Deck> () != null) {
 					Player.s_local_player.CmdPlaceOnDeck (m_filename, this.gameObject, hit.transform.gameObject);
 					return;
 				}
 			}
 			Player.s_local_player.CmdRelease ();
 			m_holder = false;
-		}
-	}
-
-	private void OnMouseDrag () {
-		if (m_holder) {
-			Vector3 drag_pos = Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x,
-																Input.mousePosition.y,
-																(Camera.main.transform.position.z * -1)));
-			Player.s_local_player.CmdDrag (drag_pos);
-			transform.position = drag_pos;
-		}
-	}
-
-	private void FixedUpdate () {
-		if (m_held && !m_holder) {
-			transform.position = Vector3.Lerp (transform.position, m_drag_transform, Time.deltaTime * m_lerp_time);
 		}
 	}
 }

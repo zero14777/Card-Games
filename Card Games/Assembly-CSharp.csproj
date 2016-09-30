@@ -49,6 +49,7 @@
      <Compile Include="Assets\Scripts\Card.cs" />
      <Compile Include="Assets\Scripts\CardSpawner.cs" />
      <Compile Include="Assets\Scripts\Deck.cs" />
+     <Compile Include="Assets\Scripts\Draggable.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\GameMenu.cs" />
      <Compile Include="Assets\Scripts\MainMenu.cs" />

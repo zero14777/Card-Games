@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Board : MonoBehaviour {
 
@@ -57,6 +58,20 @@ public class Board : MonoBehaviour {
 			} else if (Input.GetAxis ("Mouse ScrollWheel") < 0f && Camera.main.transform.position.z > -20) { // backwards
 				Camera.main.transform.position = new Vector3 (Camera.main.transform.position.x, Camera.main.transform.position.y, Camera.main.transform.position.z - 1);
 			}
+		}
+	}
+
+	private void CreateBlankDeck () {
+		Deck.CreateNewDeck ("", new Vector3 (0, 0, 0));
+	}
+
+	private void OnMouseOver () {
+		if (Input.GetMouseButtonDown(1)) {
+			List<Tuple<string, UnityEngine.Events.UnityAction>> functions = 
+				new List<Tuple<string, UnityEngine.Events.UnityAction>> ();
+			functions.Add(new Tuple<string, UnityEngine.Events.UnityAction>
+				("Create New Deck", new UnityEngine.Events.UnityAction (CreateBlankDeck)));
+			GameManager.Instance.RightClickMenu (functions);
 		}
 	}
 }

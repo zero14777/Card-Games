@@ -26,6 +26,9 @@ public class GameManager : NetworkBehaviour {
 	// Used to check if the curser is currently over UI
 	public bool m_over_UI;
 
+	// Prefabs
+	public GameObject m_card_prefab;
+	public GameObject m_deck_prefab;
 
 	// Set Values
 

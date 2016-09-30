@@ -1,20 +1,22 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GameManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Board.cs">
     <Files>
+      <File FileName="Assets\Scripts\Deck.cs" Line="17" Column="77" />
+      <File FileName="Assets\Scripts\Draggable.cs" Line="29" Column="2" />
+      <File FileName="Assets\Scripts\Card.cs" Line="237" Column="62" />
       <File FileName="Assets\Scripts\PlayLog.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\SpawnCards.cs" Line="24" Column="52" />
-      <File FileName="Assets\Scripts\Player.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\SpawnCards.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Player.cs" Line="152" Column="70" />
       <File FileName="Assets\Scripts\GameMenu.cs" Line="1" Column="1" />
       <File FileName="Assets\Bugs.txt" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\MainMenu.cs" Line="11" Column="84" />
-      <File FileName="Assets\Scripts\Deck.cs" Line="11" Column="2" />
-      <File FileName="Assets\Scripts\GameManager.cs" Line="97" Column="4" />
+      <File FileName="Assets\Scripts\MainMenu.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\GameManager.cs" Line="29" Column="6" />
       <File FileName="Assets\Scripts\RCMButton.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\CardSpawner.cs" Line="8" Column="18" />
+      <File FileName="Assets\Scripts\CardSpawner.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\UICard.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Card.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\OverUI.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Board.cs" Line="68" Column="31" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

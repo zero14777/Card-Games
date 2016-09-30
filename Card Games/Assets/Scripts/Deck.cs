@@ -3,11 +3,23 @@ using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Deck : NetworkBehaviour {
+public class Deck : Draggable {
+	
+	// References
+	private static GameObject m_deck_prefab;
 
+	// Deck Values
 	public string m_name = "deck";
 	public bool m_hovering = false;
 	public SyncListString m_deck = new SyncListString ();
+
+	public static GameObject CreateNewDeck (string name, Vector3 position) {
+		GameObject new_deck = (GameObject)Instantiate (GameManager.Instance.m_deck_prefab, new Vector3(position.x, position.y, 0.05f), Quaternion.identity);
+		Deck deck_component = new_deck.GetComponent<Deck> ();
+		deck_component.name = name;
+		NetworkServer.Spawn (new_deck);
+		return new_deck;
+	}
 
 	// Keeps track of cursor and hover text
 
@@ -108,6 +120,15 @@ public class Deck : NetworkBehaviour {
 		}
 		foreach (string card in temp_deck) {
 			m_deck.Add (card);
+		}
+	}
+
+	// Dragging & Dropping
+
+	protected override void OnMouseDown () {
+		if (!m_held && !GameManager.Instance.m_over_UI && Input.GetKey(KeyCode.LeftShift)) {
+			Player.s_local_player.CmdGrab (this.gameObject);
+			m_holder = true;
 		}
 	}
 }

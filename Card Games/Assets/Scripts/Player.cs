@@ -20,9 +20,8 @@ public class Player : NetworkBehaviour {
 
 	[SerializeField]
 	private GameObject m_hand_card;
-	private Card m_held_card;
+	private Draggable m_held_obj;
 
-	public GameObject m_card_prefab; //Kinds messy would like the card prefab to be placed elsewhere.
 	public GameObject m_hand_object;
 	public SyncListString m_hand = new SyncListString ();
 
@@ -48,7 +47,7 @@ public class Player : NetworkBehaviour {
 	[Command]
 	public void CmdCreateCard (string card) {
 		m_hand.Remove (card);
-		Card.CreateNewCard (card, true, new Vector3(0, 0, 0), m_card_prefab);
+		Card.CreateNewCard (card, true, new Vector3(0, 0, 0));
 		PlayLog.Instance.LogEvent (m_player_name + " added a " + Card.FormatName (card) + " card to the game.");
 	}
 
@@ -69,7 +68,7 @@ public class Player : NetworkBehaviour {
 	public override void OnNetworkDestroy () {
 		if (isServer) {
 			foreach (string card in m_hand) {
-				Card.CreateNewCard (card, false, new Vector3 (0, 0, 0), m_card_prefab);  // Make cards drop to a more convenient spot !
+				Card.CreateNewCard (card, false, new Vector3 (0, 0, 0));  // Make cards drop to a more convenient spot !
 			}
 		}
 	}
@@ -144,7 +143,7 @@ public class Player : NetworkBehaviour {
 	[Command]
 	public void CmdDropFromHand (string card, Vector3 drop_position, float drop_rotation) {
 		m_hand.Remove (card);
-		Card.CreateNewCard (card, false, drop_position, m_card_prefab, drop_rotation);
+		Card.CreateNewCard (card, false, drop_position, drop_rotation);
 		PlayLog.Instance.LogEvent (m_player_name + " dropped a card from their hand.");
 		GameManager.Instance.RpcUpdatePlayersList ();
 	}
@@ -152,7 +151,7 @@ public class Player : NetworkBehaviour {
 	[Command]
 	public void CmdReveal (GameObject deck_obj, Vector3 drop_position) {
 		string card = deck_obj.GetComponent<Deck> ().GetTopCard();
-		Card.CreateNewCard (card, true, drop_position, m_card_prefab);
+		Card.CreateNewCard (card, true, drop_position);
 		PlayLog.Instance.LogEvent (m_player_name + " revealed " + Card.FormatName (card) + ".");
 	}
 
@@ -196,18 +195,18 @@ public class Player : NetworkBehaviour {
 
 	[Command]
 	public void CmdGrab (GameObject card_obj) {
-		m_held_card = card_obj.GetComponent<Card> ();
-		m_held_card.m_held = true;
+		m_held_obj = card_obj.GetComponent<Draggable> ();
+		m_held_obj.m_held = true;
 	}
 
 	[Command]
 	public void CmdRelease () {
-		m_held_card.m_held = false;
-		m_held_card = null;
+		m_held_obj.m_held = false;
+		m_held_obj = null;
 	}
 
 	[Command]
 	public void CmdDrag (Vector3 mouse_position) {
-		m_held_card.m_drag_transform = mouse_position;
+		m_held_obj.m_drag_transform = mouse_position;
 	}
 }
