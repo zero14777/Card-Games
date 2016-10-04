@@ -229,11 +229,11 @@ public class Card : Draggable {
 
 	protected override void OnMouseUp () {
 		if (m_holder) {
-			RaycastHit2D[] temp = Physics2D.RaycastAll (Camera.main.ScreenToWorldPoint (
+			RaycastHit2D[] hits = Physics2D.RaycastAll (Camera.main.ScreenToWorldPoint (
 				new Vector3 (Input.mousePosition.x, Input.mousePosition.y, 
 					(Camera.main.transform.position.z * -1))),
 				Vector2.zero);
-			foreach (RaycastHit2D hit in temp) {
+			foreach (RaycastHit2D hit in hits) {
 				if (hit.transform.gameObject.GetComponent<Deck> () != null) {
 					Player.s_local_player.CmdPlaceOnDeck (m_filename, this.gameObject, hit.transform.gameObject);
 					return;

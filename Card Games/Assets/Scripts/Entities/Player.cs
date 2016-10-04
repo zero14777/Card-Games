@@ -16,7 +16,7 @@ public class Player : NetworkBehaviour {
 	[SyncVar]
 	public int m_player_ID;
 	[SyncVar]
-	public string m_player_name = "player";
+	public string m_player_name = "";
 
 	[SerializeField]
 	private GameObject m_hand_card;
@@ -58,17 +58,22 @@ public class Player : NetworkBehaviour {
 		if (isLocalPlayer) {
 			SetLocalPlayer ();
 			m_hand_object = GameObject.Find ("Hand");
+			m_player_name = MainMenu.m_player_name;
+
 			CmdSetName (MainMenu.m_player_name);
+			CmdUpdatePlayers ();
 		}
-		if (isServer) {
-			GameManager.Instance.RpcUpdatePlayersList ();
-		}
+	}
+
+	[Command]
+	public void CmdUpdatePlayers () {
+		GameManager.Instance.RpcUpdatePlayersList ();
 	}
 
 	public override void OnNetworkDestroy () {
 		if (isServer) {
 			foreach (string card in m_hand) {
-				Card.CreateNewCard (card, false, new Vector3 (0, 0, 0));  // Make cards drop to a more convenient spot !
+				Card.CreateNewCard (card, false, new Vector3 (0, 0, 0));
 			}
 		}
 	}
@@ -93,8 +98,7 @@ public class Player : NetworkBehaviour {
 		if (isLocalPlayer) {
 			GameObject new_hand_card = Instantiate (m_hand_card);
 			new_hand_card.transform.SetParent (m_hand_object.transform);
-			new_hand_card.GetComponent<UICard> ().m_name = card; // !
-
+			new_hand_card.GetComponent<UICard> ().m_name = card;
 			byte[] bytes = System.IO.File.ReadAllBytes (Application.dataPath + "/../Cards/" + card);
 			new_hand_card.GetComponent<Image> ().sprite = Card.GenerateSprite (bytes);
 		}
@@ -208,5 +212,10 @@ public class Player : NetworkBehaviour {
 	[Command]
 	public void CmdDrag (Vector3 mouse_position) {
 		m_held_obj.m_drag_transform = mouse_position;
+	}
+
+	[ServerCallback]
+	void OnDestroy() {
+		GameManager.Instance.RpcUpdatePlayersList ();
 	}
 }

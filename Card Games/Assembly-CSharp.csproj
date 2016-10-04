@@ -45,23 +45,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\Board.cs" />
-     <Compile Include="Assets\Scripts\Card.cs" />
-     <Compile Include="Assets\Scripts\CardSpawner.cs" />
-     <Compile Include="Assets\Scripts\Deck.cs" />
-     <Compile Include="Assets\Scripts\Draggable.cs" />
-     <Compile Include="Assets\Scripts\GameManager.cs" />
-     <Compile Include="Assets\Scripts\GameMenu.cs" />
-     <Compile Include="Assets\Scripts\MainMenu.cs" />
-     <Compile Include="Assets\Scripts\MyNetworkManager.cs" />
-     <Compile Include="Assets\Scripts\OverUI.cs" />
-     <Compile Include="Assets\Scripts\PlayLog.cs" />
-     <Compile Include="Assets\Scripts\Player.cs" />
-     <Compile Include="Assets\Scripts\RCMButton.cs" />
-     <Compile Include="Assets\Scripts\RightClickMenu.cs" />
+     <Compile Include="Assets\Scripts\Classes\Draggable.cs" />
+     <Compile Include="Assets\Scripts\Classes\OverUI.cs" />
+     <Compile Include="Assets\Scripts\Entities\Board.cs" />
+     <Compile Include="Assets\Scripts\Entities\Card.cs" />
+     <Compile Include="Assets\Scripts\Entities\CardSpawner.cs" />
+     <Compile Include="Assets\Scripts\Entities\Deck.cs" />
+     <Compile Include="Assets\Scripts\Entities\PlayLog.cs" />
+     <Compile Include="Assets\Scripts\Entities\Player.cs" />
+     <Compile Include="Assets\Scripts\Entities\UICard.cs" />
+     <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
+     <Compile Include="Assets\Scripts\Managers\MyNetworkManager.cs" />
+     <Compile Include="Assets\Scripts\Menus\GameMenu.cs" />
+     <Compile Include="Assets\Scripts\Menus\MainMenu.cs" />
+     <Compile Include="Assets\Scripts\Menus\RightClickMenu.cs" />
+     <Compile Include="Assets\Scripts\Menus\RightClickMenuButton.cs" />
      <Compile Include="Assets\Scripts\SpawnCards.cs" />
-     <Compile Include="Assets\Scripts\UICard.cs" />
-     <None Include="Assets\Bugs.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

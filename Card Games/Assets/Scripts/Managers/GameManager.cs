@@ -30,12 +30,26 @@ public class GameManager : NetworkBehaviour {
 	public GameObject m_card_prefab;
 	public GameObject m_deck_prefab;
 
-	// Set Values
+	// Set Values and Game Setup
+
+	public GameObject card_spawner_prefab;
+	public GameObject card_spawner_menu;
 
 	void Start () {
 		m_instance = this;
 		m_open_menu = null;
 		m_over_UI = false;
+
+		DirectoryInfo card_folder = new DirectoryInfo (Application.dataPath + "/../Cards");
+		FileInfo[] png_files = card_folder.GetFiles ("*.png"); // can use jpg files too
+
+		foreach (FileInfo file in png_files) {
+			GameObject new_card_spawner = Instantiate (card_spawner_prefab);
+			new_card_spawner.transform.SetParent(card_spawner_menu.transform);
+			byte[] bytes = System.IO.File.ReadAllBytes (Application.dataPath + "/../Cards/" + file.Name);
+			new_card_spawner.GetComponent<Image> ().sprite = Card.GenerateSprite (bytes);
+			new_card_spawner.GetComponent<CardSpawner> ().m_card = file.Name;
+		}
 	}
 
 	// Keep track of players

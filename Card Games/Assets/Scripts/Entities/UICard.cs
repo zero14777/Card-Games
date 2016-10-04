@@ -37,10 +37,27 @@ public class UICard : OverUI, IPointerEnterHandler, IPointerExitHandler, IBeginD
 
 	public void OnEndDrag (PointerEventData event_data) {
 		Board.EnableDrag ();
-		Player.s_local_player.CmdDropFromHand (m_name, Camera.main.ScreenToWorldPoint (
-												new Vector3 (Input.mousePosition.x, Input.mousePosition.y,
-												(Camera.main.transform.position.z * -1))),
-												Board.s_rotation);
+
+		bool deck_found = false;
+
+		RaycastHit2D[] hits = Physics2D.RaycastAll (Camera.main.ScreenToWorldPoint (
+													new Vector3 (Input.mousePosition.x, Input.mousePosition.y, 
+													(Camera.main.transform.position.z * -1))),
+													Vector2.zero);
+		foreach (RaycastHit2D hit in hits) {
+			if (hit.transform.gameObject.GetComponent<Deck> () != null) {
+				Player.s_local_player.CmdPlaceOnDeck (m_name, this.gameObject, hit.transform.gameObject);
+				deck_found = true;
+				return;
+			}
+		}
+		if (!deck_found) {
+			Player.s_local_player.CmdDropFromHand (m_name, Camera.main.ScreenToWorldPoint (
+													new Vector3 (Input.mousePosition.x, Input.mousePosition.y,
+													(Camera.main.transform.position.z * -1))),
+													Board.s_rotation);
+		}
+
 		GameObject.Destroy (this.gameObject);
 	}
 
