@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class Tuple<Type1, Type2> {
 	public Type1 Name { get; set;}
@@ -50,6 +51,10 @@ public class GameManager : NetworkBehaviour {
 			new_card_spawner.GetComponent<Image> ().sprite = Card.GenerateSprite (bytes);
 			new_card_spawner.GetComponent<CardSpawner> ().m_card = file.Name;
 		}
+
+		if (MainMenu.m_load) {
+			LoadGame ();
+		}
 	}
 
 	// Keep track of players
@@ -65,6 +70,75 @@ public class GameManager : NetworkBehaviour {
 			m_players_list.text += " - Hand ";
 			m_players_list.text += player.m_hand.Count;
 			m_players_list.text += "\n";
+		}
+	}
+
+	// Disconnect
+
+	public void DisconnectGame () {
+		NetworkManager.singleton.StopHost ();
+	}
+
+	// Save Game State
+
+	public void SaveGame () {
+		Save newsave = new Save ();
+
+		newsave.m_decks = new List<DeckSave> ();
+		Deck[] decks = FindObjectsOfType(typeof(Deck)) as Deck[];
+		foreach (Deck deck in decks) {
+			DeckSave temp = new DeckSave ();
+			temp.m_name = deck.m_name;
+			temp.m_deck = new List<string> ();
+			foreach (string card in deck.m_deck) {
+				temp.m_deck.Add (card);
+			}
+			temp.m_x_pos = deck.transform.position.x;
+			temp.m_y_pos = deck.transform.position.y;
+			//save rotation
+			newsave.m_decks.Add (temp);
+		}
+
+		newsave.m_cards = new List<CardSave> ();
+		Card[] cards = FindObjectsOfType(typeof(Card)) as Card[];
+		foreach (Card card in cards) {
+			CardSave temp = new CardSave ();
+			temp.m_filename = card.m_filename;
+			temp.m_upright = card.m_upright;
+			temp.m_x_pos = card.transform.position.x;
+			temp.m_y_pos = card.transform.position.y;
+			temp.m_rotation = card.m_rotation;
+			newsave.m_cards.Add (temp);
+		}
+
+		FileStream file = File.Create (Application.dataPath + "/Save");
+		BinaryFormatter bf = new BinaryFormatter ();
+		bf.Serialize (file, newsave);
+		file.Close ();
+	}
+
+	// Load Game State
+
+	public void LoadGame () {
+		try {
+			FileStream file = File.Open (Application.dataPath + "/Save", FileMode.Open);
+			BinaryFormatter bf = new BinaryFormatter ();
+			Save load = (Save)bf.Deserialize(file);
+			file.Close ();
+
+			foreach (DeckSave deck in load.m_decks) {
+				GameObject temp = Deck.CreateNewDeck (deck.m_name, new Vector3(deck.m_x_pos, deck.m_y_pos, 0));
+				Deck temp_deck = temp.GetComponent<Deck> ();
+				foreach (string card in deck.m_deck) {
+					temp_deck.m_deck.Add(card);
+				}
+			}
+
+			foreach (CardSave card in load.m_cards) {
+				Card.CreateNewCard (card.m_filename, card.m_upright, new Vector3 (card.m_x_pos, card.m_y_pos, 0), card.m_rotation);
+			}
+		} catch (FileNotFoundException) {
+			throw new FileNotFoundException ("File: " + Application.dataPath + "/Save not found.");
 		}
 	}
 
