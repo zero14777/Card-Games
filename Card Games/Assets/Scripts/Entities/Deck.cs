@@ -4,19 +4,20 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Deck : Draggable {
-	
+
+	public bool m_hovering = false;
+
 	// References
 	private static GameObject m_deck_prefab;
 
 	// Deck Values
-	public string m_name = "deck";
-	public bool m_hovering = false;
+	public string m_name = "Deck";
 	public SyncListString m_deck = new SyncListString ();
 
-	public static GameObject CreateNewDeck (string name, Vector3 position) {
-		GameObject new_deck = (GameObject)Instantiate (GameManager.Instance.m_deck_prefab, new Vector3(position.x, position.y, 0.05f), Quaternion.identity);
+	public static GameObject CreateNewDeck (string name, float x_pos = 0, float y_pos = 0, float rotation = 0) {
+		GameObject new_deck = (GameObject)Instantiate (GameManager.Instance.m_deck_prefab, new Vector3(x_pos, y_pos, 0.05f), Quaternion.identity);
 		Deck deck_component = new_deck.GetComponent<Deck> ();
-		deck_component.name = name;
+		deck_component.m_name = name;
 		NetworkServer.Spawn (new_deck);
 		return new_deck;
 	}
@@ -42,6 +43,10 @@ public class Deck : Draggable {
 				("Reveal", new UnityEngine.Events.UnityAction (Reveal)));
 			functions.Add(new Tuple<string, UnityEngine.Events.UnityAction>
 				("Shuffle", new UnityEngine.Events.UnityAction (Shuffle)));
+			functions.Add(new Tuple<string, UnityEngine.Events.UnityAction>
+				("Rotate Left", new UnityEngine.Events.UnityAction (RotateLeft)));
+			functions.Add(new Tuple<string, UnityEngine.Events.UnityAction>
+				("Rotate Right", new UnityEngine.Events.UnityAction (RotateRight)));
 			GameManager.Instance.RightClickMenu (functions);
 		}
 	}
@@ -84,17 +89,25 @@ public class Deck : Draggable {
 	// Actions Decks object can perform
 
 	private void Draw () {
-		Player.s_local_player.CmdDrawToHand (this.gameObject);
+		if (m_deck.Count > 0) {
+			Player.s_local_player.CmdDrawToHand (this.gameObject);
+		}
 	}
 
 	private void Reveal () {
-		Player.s_local_player.CmdReveal (this.gameObject, Camera.main.ScreenToWorldPoint 
-			(new Vector3 (Input.mousePosition.x, Input.mousePosition.y,
-			(Camera.main.transform.position.z * -1))));
+		Player.s_local_player.CmdReveal (this.gameObject, this.gameObject.transform.position, m_rotation);
 	}
 
 	private void Shuffle () {
 		Player.s_local_player.CmdShuffleDeck (this.gameObject);
+	}
+
+	private void RotateLeft () {
+		Player.s_local_player.CmdRotateDeck (this.gameObject, 90.0f);
+	}
+
+	private void RotateRight () {
+		Player.s_local_player.CmdRotateDeck (this.gameObject, -90.0f);
 	}
 
 	// Core Deck functionality

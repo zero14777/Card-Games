@@ -47,7 +47,7 @@ public class Player : NetworkBehaviour {
 	[Command]
 	public void CmdCreateCard (string card) {
 		m_hand.Remove (card);
-		Card.CreateNewCard (card, true, new Vector3(0, 0, 0));
+		Card.CreateNewCard (card, true);
 		PlayLog.Instance.LogEvent (m_player_name + " added a " + Card.FormatName (card) + " card to the game.");
 	}
 
@@ -73,7 +73,7 @@ public class Player : NetworkBehaviour {
 	public override void OnNetworkDestroy () {
 		if (isServer) {
 			foreach (string card in m_hand) {
-				Card.CreateNewCard (card, false, new Vector3 (0, 0, 0));
+				Card.CreateNewCard (card, false);
 			}
 		}
 	}
@@ -147,15 +147,15 @@ public class Player : NetworkBehaviour {
 	[Command]
 	public void CmdDropFromHand (string card, Vector3 drop_position, float drop_rotation) {
 		m_hand.Remove (card);
-		Card.CreateNewCard (card, false, drop_position, drop_rotation);
+		Card.CreateNewCard (card, false, drop_position.x, drop_position.y, drop_rotation);
 		PlayLog.Instance.LogEvent (m_player_name + " dropped a card from their hand.");
 		GameManager.Instance.RpcUpdatePlayersList ();
 	}
 
 	[Command]
-	public void CmdReveal (GameObject deck_obj, Vector3 drop_position) {
+	public void CmdReveal (GameObject deck_obj, Vector3 drop_position, float rotation) {
 		string card = deck_obj.GetComponent<Deck> ().GetTopCard();
-		Card.CreateNewCard (card, true, drop_position);
+		Card.CreateNewCard (card, true, drop_position.x, drop_position.y, rotation);
 		PlayLog.Instance.LogEvent (m_player_name + " revealed " + Card.FormatName (card) + ".");
 	}
 
@@ -190,9 +190,17 @@ public class Player : NetworkBehaviour {
 	}
 
 	[Command]
-	public void CmdRotate (GameObject card_obj, float angle) {
+	public void CmdRotateCard (GameObject card_obj, float angle) {
 		Card card = card_obj.GetComponent<Card> ();
 		card.m_rotation = card.m_rotation + angle;
+	}
+
+	// Rotate Deck
+
+	[Command]
+	public void CmdRotateDeck (GameObject deck_obj, float angle) {
+		Deck deck = deck_obj.GetComponent<Deck> ();
+		deck.m_rotation = deck.m_rotation + angle;
 	}
 
 	// Dragging & Dropping

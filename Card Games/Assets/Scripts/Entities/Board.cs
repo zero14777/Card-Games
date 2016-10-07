@@ -62,7 +62,7 @@ public class Board : MonoBehaviour {
 	}
 
 	private void CreateBlankDeck () {
-		Deck.CreateNewDeck ("", new Vector3 (0, 0, 0));
+		Deck.CreateNewDeck ("", 0, 0);
 	}
 
 	private void OnMouseOver () {

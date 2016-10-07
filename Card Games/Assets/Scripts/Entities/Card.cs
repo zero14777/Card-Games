@@ -19,16 +19,14 @@ public class Card : Draggable {
 	private bool m_blownup = false;
 	private Vector3 m_normal_size;
 	public Vector3 m_blowup_size;
-	[SyncVar(hook="DoRotation")]
-	public float m_rotation;
 	[SyncVar]
 	public bool m_upright;
 
 	[SyncEvent]
 	public event UnityEngine.Events.UnityAction EventFlip;
 
-	public static GameObject CreateNewCard (string file_name, bool upright, Vector3 position, float rotation = 0) {
-		GameObject new_card = (GameObject)Instantiate (GameManager.Instance.m_card_prefab, position, Quaternion.identity);
+	public static GameObject CreateNewCard (string file_name, bool upright, float x_pos = 0, float y_pos = 0, float rotation = 0) {
+		GameObject new_card = (GameObject)Instantiate (GameManager.Instance.m_card_prefab, new Vector3 (x_pos, y_pos, 0), Quaternion.identity);
 		Card card_component = new_card.GetComponent<Card> ();
 		card_component.m_filename = file_name;
 		card_component.LoadFront ();
@@ -174,15 +172,11 @@ public class Card : Draggable {
 	}
 
 	private void RotateLeft () {
-		Player.s_local_player.CmdRotate (this.gameObject, 90.0f);
+		Player.s_local_player.CmdRotateCard (this.gameObject, 90.0f);
 	}
 
 	private void RotateRight () {
-		Player.s_local_player.CmdRotate (this.gameObject, -90.0f);
-	}
-
-	private void DoRotation (float rotation) {
-		transform.rotation = Quaternion.Euler (new Vector3 (0, 0, rotation));
+		Player.s_local_player.CmdRotateCard (this.gameObject, -90.0f);
 	}
 
 	// Card Zoom (Client side only)

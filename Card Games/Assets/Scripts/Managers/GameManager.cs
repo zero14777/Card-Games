@@ -127,7 +127,7 @@ public class GameManager : NetworkBehaviour {
 			file.Close ();
 
 			foreach (DeckSave deck in load.m_decks) {
-				GameObject temp = Deck.CreateNewDeck (deck.m_name, new Vector3(deck.m_x_pos, deck.m_y_pos, 0));
+				GameObject temp = Deck.CreateNewDeck (deck.m_name, deck.m_x_pos, deck.m_y_pos);
 				Deck temp_deck = temp.GetComponent<Deck> ();
 				foreach (string card in deck.m_deck) {
 					temp_deck.m_deck.Add(card);
@@ -135,7 +135,7 @@ public class GameManager : NetworkBehaviour {
 			}
 
 			foreach (CardSave card in load.m_cards) {
-				Card.CreateNewCard (card.m_filename, card.m_upright, new Vector3 (card.m_x_pos, card.m_y_pos, 0), card.m_rotation);
+				Card.CreateNewCard (card.m_filename, card.m_upright, card.m_x_pos, card.m_y_pos, card.m_rotation);
 			}
 		} catch (FileNotFoundException) {
 			throw new FileNotFoundException ("File: " + Application.dataPath + "/Save not found.");

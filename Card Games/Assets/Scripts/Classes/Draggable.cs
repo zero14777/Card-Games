@@ -38,6 +38,17 @@ public class Draggable : NetworkBehaviour {
 		}
 	}
 
+	// Rotation
+
+	[SyncVar(hook="DoRotation")]
+	public float m_rotation;
+
+	private void DoRotation (float rotation) {
+		transform.rotation = Quaternion.Euler (new Vector3 (0, 0, rotation));
+	}
+
+	// Interpolating movements across the network
+
 	private void FixedUpdate () {
 		if (m_held && !m_holder) {
 			transform.position = Vector3.Lerp (transform.position, m_drag_transform, Time.deltaTime * m_lerp_time);
