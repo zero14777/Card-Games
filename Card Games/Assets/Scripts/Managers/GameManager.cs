@@ -177,6 +177,30 @@ public class GameManager : NetworkBehaviour {
 		}
 	}
 
+	// Menu
+
+	public GameObject m_menu;
+
+	public void OpenMenu () {
+		m_menu.SetActive (true);
+	}
+
+	public void CloseMenu () {
+		m_menu.SetActive (false);
+	}
+
+	// Card Spawners
+
+	public GameObject m_Card_Spawners;
+
+	public void CardSpawners () {
+		if (m_Card_Spawners.activeSelf) {
+			m_Card_Spawners.SetActive (false);
+		} else {
+			m_Card_Spawners.SetActive (true);
+		}
+	}
+
 	// Search Addable Cards
 
 	public InputField m_search_input_field;

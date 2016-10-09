@@ -53,16 +53,16 @@ public class Board : MonoBehaviour {
 				Camera.main.transform.position = new Vector3 (0, 0, Camera.main.transform.position.z); //! This seems to autosync sometimes? been unable to replicate
 			}
 
-			if (Input.GetAxis ("Mouse ScrollWheel") > 0f && Camera.main.transform.position.z < -10) { // forward
+			if (Input.GetAxis ("Mouse ScrollWheel") > 0f && Camera.main.transform.position.z < -20) { // forward
 				Camera.main.transform.position = new Vector3 (Camera.main.transform.position.x, Camera.main.transform.position.y, Camera.main.transform.position.z + 1);
-			} else if (Input.GetAxis ("Mouse ScrollWheel") < 0f && Camera.main.transform.position.z > -20) { // backwards
+			} else if (Input.GetAxis ("Mouse ScrollWheel") < 0f && Camera.main.transform.position.z > -40) { // backwards
 				Camera.main.transform.position = new Vector3 (Camera.main.transform.position.x, Camera.main.transform.position.y, Camera.main.transform.position.z - 1);
 			}
 		}
 	}
 
 	private void CreateBlankDeck () {
-		Deck.CreateNewDeck ("", 0, 0);
+		Deck.CreateNewDeck ("Deck", 0, 0);
 	}
 
 	private void OnMouseOver () {

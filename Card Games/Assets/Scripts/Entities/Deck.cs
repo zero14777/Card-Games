@@ -95,11 +95,15 @@ public class Deck : Draggable {
 	}
 
 	private void Reveal () {
-		Player.s_local_player.CmdReveal (this.gameObject, this.gameObject.transform.position, m_rotation);
+		if (m_deck.Count > 0) {
+			Player.s_local_player.CmdReveal (this.gameObject, this.gameObject.transform.position, m_rotation);
+		}
 	}
 
 	private void Shuffle () {
-		Player.s_local_player.CmdShuffleDeck (this.gameObject);
+		if (m_deck.Count > 0) {
+			Player.s_local_player.CmdShuffleDeck (this.gameObject);
+		}
 	}
 
 	private void RotateLeft () {

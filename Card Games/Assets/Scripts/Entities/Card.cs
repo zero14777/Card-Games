@@ -41,7 +41,7 @@ public class Card : Draggable {
 		m_back = Resources.Load<Sprite> ("Card_Back");
 		m_sprite_component = this.GetComponent<SpriteRenderer> ();
 		EventFlip = new UnityEngine.Events.UnityAction (FlipEvent);
-		m_normal_size = new Vector3 (0.33f, 0.33f, 1);
+		m_normal_size = new Vector3 (0.75f, 0.75f, 1);
 		m_blowup_size = new Vector3 (1, 1, 1);
 		if (isClient) {
 			if (File.Exists (Application.dataPath + "/../Cards/" + m_filename)) {
