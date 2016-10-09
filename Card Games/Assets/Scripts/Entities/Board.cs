@@ -31,7 +31,7 @@ public class Board : MonoBehaviour {
 	}
 
 	void Update () {
-		if (m_dragging && !s_no_drag) {
+		if (m_dragging && !GameManager.Instance.m_over_UI && !s_no_drag) {
 			Vector3 offset = m_drag_point - Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, Camera.main.transform.position.z * -1));
 			offset.z = 0; 
 			Camera.main.transform.position = m_camera_orig + offset;

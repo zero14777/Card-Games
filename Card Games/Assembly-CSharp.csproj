@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Classes\Draggable.cs" />
-     <Compile Include="Assets\Scripts\Classes\OverUI.cs" />
+     <Compile Include="Assets\Scripts\Classes\UIElement.cs" />
      <Compile Include="Assets\Scripts\Entities\Board.cs" />
      <Compile Include="Assets\Scripts\Entities\Card.cs" />
      <Compile Include="Assets\Scripts\Entities\CardSpawner.cs" />

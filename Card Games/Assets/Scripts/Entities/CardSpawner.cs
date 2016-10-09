@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 
-public class CardSpawner : MonoBehaviour, IPointerClickHandler {
+public class CardSpawner : UIElement, IPointerClickHandler {
 
 	public string m_card; 
 

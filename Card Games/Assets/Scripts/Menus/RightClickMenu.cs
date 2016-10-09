@@ -2,7 +2,7 @@
 using UnityEngine.EventSystems;
 using System.Collections;
 
-public class RightClickMenu : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
+public class RightClickMenu : UIElement, IPointerEnterHandler, IPointerExitHandler {
 
 	public bool m_over;
 
@@ -16,17 +16,13 @@ public class RightClickMenu : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 		}
 	}
 
-	public void OnPointerEnter (PointerEventData event_data) {
+	public override void OnPointerEnter (PointerEventData event_data) {
 		m_over = true;
 		GameManager.Instance.m_over_UI = true;
 	}
 
-	public void OnPointerExit (PointerEventData event_data) {
+	public override void OnPointerExit (PointerEventData event_data) {
 		m_over = false;
-		GameManager.Instance.m_over_UI = false;
-	}
-
-	void OnDestroy () {
 		GameManager.Instance.m_over_UI = false;
 	}
 }

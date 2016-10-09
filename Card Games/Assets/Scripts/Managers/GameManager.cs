@@ -115,6 +115,9 @@ public class GameManager : NetworkBehaviour {
 		BinaryFormatter bf = new BinaryFormatter ();
 		bf.Serialize (file, newsave);
 		file.Close ();
+
+
+		Debug.Log ("Game Saved");
 	}
 
 	// Load Game State
@@ -187,6 +190,7 @@ public class GameManager : NetworkBehaviour {
 
 	public void CloseMenu () {
 		m_menu.SetActive (false);
+		GameManager.Instance.m_over_UI = false;
 	}
 
 	// Card Spawners
