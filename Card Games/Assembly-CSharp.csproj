@@ -53,6 +53,7 @@
      <Compile Include="Assets\Scripts\Entities\Deck.cs" />
      <Compile Include="Assets\Scripts\Entities\PlayLog.cs" />
      <Compile Include="Assets\Scripts\Entities\Player.cs" />
+     <Compile Include="Assets\Scripts\Entities\Token.cs" />
      <Compile Include="Assets\Scripts\Entities\UICard.cs" />
      <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
      <Compile Include="Assets\Scripts\Managers\MyNetworkManager.cs" />

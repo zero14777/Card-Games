@@ -103,6 +103,9 @@ public class Card : Draggable {
 
 	private void OnMouseOver () {
 		GameManager.Instance.MoveHoverText ();
+		if (Input.GetKeyDown(KeyCode.Delete)) {
+			Player.s_local_player.CmdDeleteCard (this.gameObject);
+		}
 		if (m_upright && Input.GetKeyDown("z")) {
 			ChangeSize ();
 		}

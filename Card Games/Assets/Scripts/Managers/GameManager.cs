@@ -30,6 +30,7 @@ public class GameManager : NetworkBehaviour {
 	// Prefabs
 	public GameObject m_card_prefab;
 	public GameObject m_deck_prefab;
+	public GameObject m_token_prefab;
 
 	// Set Values and Game Setup
 
@@ -59,17 +60,25 @@ public class GameManager : NetworkBehaviour {
 
 	// Keep track of players
 
-	public Text m_players_list;
+	public GameObject m_players_list;
+	public GameObject m_player_data_prefab;
 
 	[ClientRpc]
 	public void RpcUpdatePlayersList () {
+		foreach (Transform child in m_players_list.transform) {
+			GameObject.Destroy(child.gameObject);
+		}
 		Player[] players = FindObjectsOfType<Player> ();
-		m_players_list.text = "Players:\n";
 		foreach (Player player in players) {
-			m_players_list.text += player.m_player_name;
-			m_players_list.text += " - Hand ";
-			m_players_list.text += player.m_hand.Count;
-			m_players_list.text += "\n";
+			GameObject temp_player_data = (GameObject)Instantiate (GameManager.Instance.m_player_data_prefab);
+			temp_player_data.transform.SetParent (m_players_list.transform);
+			string player_data = player.m_player_name;
+			player_data += " - Hand ";
+			player_data += player.m_hand.Count;
+			player_data += " - ";
+			player_data += player.m_score;
+			player_data += " ";
+			temp_player_data.GetComponentInChildren<Text> ().text = player_data;
 		}
 	}
 

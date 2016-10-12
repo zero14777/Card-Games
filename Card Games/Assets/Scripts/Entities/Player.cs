@@ -17,6 +17,8 @@ public class Player : NetworkBehaviour {
 	public int m_player_ID;
 	[SyncVar]
 	public string m_player_name = "";
+	[SyncVar]
+	public int m_score = 0;
 
 	[SerializeField]
 	private GameObject m_hand_card;
@@ -49,6 +51,33 @@ public class Player : NetworkBehaviour {
 		m_hand.Remove (card);
 		Card.CreateNewCard (card, true);
 		PlayLog.Instance.LogEvent (m_player_name + " added a " + Card.FormatName (card) + " card to the game.");
+	}
+
+	[Command]
+	public void CmdDeleteCard (GameObject card) {
+		NetworkServer.Destroy (card);
+	}
+
+	[Command]
+	public void CmdCreateDeck (Vector3 drop_position) {
+		Deck.CreateNewDeck ("Deck", drop_position.x, drop_position.y);
+		PlayLog.Instance.LogEvent (m_player_name + " created a new deck.");
+	}
+
+	[Command]
+	public void CmdDeleteDeck (GameObject deck) {
+		NetworkServer.Destroy (deck);
+	}
+
+	[Command]
+	public void CmdCreateToken (Vector3 drop_position) {
+		Token.CreateNewToken (drop_position.x, drop_position.y);
+		PlayLog.Instance.LogEvent (m_player_name + " created a token.");
+	}
+
+	[Command]
+	public void CmdDeleteToken (GameObject token) {
+		NetworkServer.Destroy (token);
 	}
 
 	/// <summary>
@@ -114,6 +143,9 @@ public class Player : NetworkBehaviour {
 	/// image in the Cards folder is associated with this card.</param>
 	[Command]
 	public void CmdAddToHand (GameObject card_obj) {
+		if (m_hand.Count > 9) {
+			return;
+		}
 		Card card = card_obj.GetComponent<Card> ();
 		m_hand.Add (card.m_filename);
 		RpcNewHandCard (card.m_filename);

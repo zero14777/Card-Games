@@ -62,7 +62,13 @@ public class Board : MonoBehaviour {
 	}
 
 	private void CreateBlankDeck () {
-		Deck.CreateNewDeck ("Deck", 0, 0);
+		Player.s_local_player.CmdCreateDeck (Camera.main.ScreenToWorldPoint ( new Vector3
+			(Input.mousePosition.x, Input.mousePosition.y, (Camera.main.transform.position.z * -1))));
+	}
+
+	private void CreateToken () {
+		Player.s_local_player.CmdCreateToken (Camera.main.ScreenToWorldPoint ( new Vector3
+			(Input.mousePosition.x, Input.mousePosition.y, (Camera.main.transform.position.z * -1))));
 	}
 
 	private void OnMouseOver () {
@@ -71,6 +77,8 @@ public class Board : MonoBehaviour {
 				new List<Tuple<string, UnityEngine.Events.UnityAction>> ();
 			functions.Add(new Tuple<string, UnityEngine.Events.UnityAction>
 				("Create New Deck", new UnityEngine.Events.UnityAction (CreateBlankDeck)));
+			functions.Add(new Tuple<string, UnityEngine.Events.UnityAction>
+				("Create New Token", new UnityEngine.Events.UnityAction (CreateToken)));
 			GameManager.Instance.RightClickMenu (functions);
 		}
 	}
