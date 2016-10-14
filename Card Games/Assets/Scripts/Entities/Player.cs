@@ -47,6 +47,14 @@ public class Player : NetworkBehaviour {
 	}
 
 	[Command]
+	public void CmdChangePlayerScore (GameObject player_go, int change) {
+		Player player = player_go.GetComponent<Player> ();
+		player.m_score = player.m_score + change;
+		PlayLog.Instance.LogEvent (player.m_player_name + "'s score has been changed by " + change);
+		GameManager.Instance.RpcUpdatePlayersList ();
+	}
+
+	[Command]
 	public void CmdCreateCard (string card) {
 		m_hand.Remove (card);
 		Card.CreateNewCard (card, true);
@@ -80,6 +88,19 @@ public class Player : NetworkBehaviour {
 		NetworkServer.Destroy (token);
 	}
 
+	[Command]
+	public void CmdUpdatePlayers () {
+		GameManager.Instance.RpcUpdatePlayersList ();
+	}
+
+	public override void OnNetworkDestroy () {
+		if (isServer) {
+			foreach (string card in m_hand) {
+				Card.CreateNewCard (card, false);
+			}
+		}
+	}
+
 	/// <summary>
 	/// Automatically sets up the local client player object.
 	/// </summary>
@@ -93,19 +114,6 @@ public class Player : NetworkBehaviour {
 
 			CmdSetName (MainMenu.m_player_name);
 			CmdUpdatePlayers ();
-		}
-	}
-
-	[Command]
-	public void CmdUpdatePlayers () {
-		GameManager.Instance.RpcUpdatePlayersList ();
-	}
-
-	public override void OnNetworkDestroy () {
-		if (isServer) {
-			foreach (string card in m_hand) {
-				Card.CreateNewCard (card, false);
-			}
 		}
 	}
 

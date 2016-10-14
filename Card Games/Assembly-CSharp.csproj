@@ -57,9 +57,10 @@
      <Compile Include="Assets\Scripts\Entities\UICard.cs" />
      <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
      <Compile Include="Assets\Scripts\Managers\MyNetworkManager.cs" />
-     <Compile Include="Assets\Scripts\Menus\MainMenu.cs" />
-     <Compile Include="Assets\Scripts\Menus\RightClickMenu.cs" />
-     <Compile Include="Assets\Scripts\Menus\RightClickMenuButton.cs" />
+     <Compile Include="Assets\Scripts\Menus and Buttons\ChangeScoreButton.cs" />
+     <Compile Include="Assets\Scripts\Menus and Buttons\MainMenu.cs" />
+     <Compile Include="Assets\Scripts\Menus and Buttons\RightClickMenu.cs" />
+     <Compile Include="Assets\Scripts\Menus and Buttons\RightClickMenuButton.cs" />
      <Compile Include="Assets\Scripts\SaveFile.cs" />
      <Compile Include="Assets\Scripts\SpawnCards.cs" />
  <Reference Include="UnityEngine.UI">
