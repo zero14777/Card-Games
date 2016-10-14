@@ -84,6 +84,8 @@ public class Player : NetworkBehaviour {
 	/// Automatically sets up the local client player object.
 	/// </summary>
 	void Start () {
+		transform.SetParent (GameObject.Find ("Players").transform);
+
 		if (isLocalPlayer) {
 			SetLocalPlayer ();
 			m_hand_object = GameObject.Find ("Hand");
