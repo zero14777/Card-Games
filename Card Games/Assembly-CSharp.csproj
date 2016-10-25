@@ -51,6 +51,7 @@
      <Compile Include="Assets\Scripts\Entities\Card.cs" />
      <Compile Include="Assets\Scripts\Entities\CardSpawner.cs" />
      <Compile Include="Assets\Scripts\Entities\Deck.cs" />
+     <Compile Include="Assets\Scripts\Entities\NewBehaviourScript.cs" />
      <Compile Include="Assets\Scripts\Entities\PlayLog.cs" />
      <Compile Include="Assets\Scripts\Entities\Player.cs" />
      <Compile Include="Assets\Scripts\Entities\Token.cs" />

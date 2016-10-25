@@ -50,8 +50,9 @@ public class Player : NetworkBehaviour {
 	public void CmdChangePlayerScore (GameObject player_go, int change) {
 		Player player = player_go.GetComponent<Player> ();
 		player.m_score = player.m_score + change;
-		PlayLog.Instance.LogEvent (player.m_player_name + "'s score has been changed by " + change);
-		GameManager.Instance.RpcUpdatePlayersList ();
+		PlayLog.Instance.LogEvent (player.m_player_name + "'s score has been changed to " + player.m_score);
+		Invoke("CmdUpdatePlayers", 0.0001f);
+		//GameManager.Instance.RpcUpdatePlayersList ();
 	}
 
 	[Command]
