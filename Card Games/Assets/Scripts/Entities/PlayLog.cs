@@ -14,10 +14,11 @@ public class PlayLog : NetworkBehaviour {
 
 	void Start () {
 		m_instance = this;
+
+		m_log.Callback = DoUpdateLog;
 	}
-		
-	[SyncVar(hook = "OnUpdateLog")]
-	private string m_log = "";
+
+	private SyncListString m_log = new SyncListString ();
 	public InputField m_input_text;
 	public Scrollbar m_scroll;
 
@@ -36,20 +37,21 @@ public class PlayLog : NetworkBehaviour {
 		if (!isServer) {
 			return;
 		}
-		if (m_log != "") {
-			m_log += "\n";
-		}
-		m_log += log_event;
+		m_log.Add(log_event);
 	}
 
-	public void OnUpdateLog (string log) {
-		this.gameObject.GetComponent<Text> ().text = log;
+	private void DoUpdateLog (SyncListString.Operation op, int index) {
+		this.gameObject.GetComponent<Text> ().text = "";
+		foreach (string line in m_log) {
+			this.gameObject.GetComponent<Text> ().text += line;
+			this.gameObject.GetComponent<Text> ().text += "\n";
+		}
 		StartCoroutine(MoveScrollBar ());
 	}
 
 	// keeps the scroll bar looking at the most recent event
 
-	public IEnumerator MoveScrollBar () {
+	private IEnumerator MoveScrollBar () {
 		yield return new WaitForSeconds(0.1f);
 		m_scroll.value = 0;
 	}

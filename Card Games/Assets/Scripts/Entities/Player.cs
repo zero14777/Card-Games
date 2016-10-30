@@ -14,8 +14,6 @@ public class Player : NetworkBehaviour {
 
 	public static Player s_local_player;
 	[SyncVar]
-	public int m_player_ID;
-	[SyncVar]
 	public string m_player_name = "";
 	[SyncVar]
 	public int m_score = 0;
@@ -51,8 +49,7 @@ public class Player : NetworkBehaviour {
 		Player player = player_go.GetComponent<Player> ();
 		player.m_score = player.m_score + change;
 		PlayLog.Instance.LogEvent (player.m_player_name + "'s score has been changed to " + player.m_score);
-		Invoke("CmdUpdatePlayers", 0.0001f);
-		//GameManager.Instance.RpcUpdatePlayersList ();
+		Invoke("CmdUpdatePlayers", 0.1f);
 	}
 
 	[Command]
