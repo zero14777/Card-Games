@@ -240,4 +240,22 @@ public class Card : Draggable {
 			m_holder = false;
 		}
 	}
+
+	public void BringToTop () {
+		int order_in_layer = 1;
+		BoxCollider2D[] colliders = FindObjectsOfType(typeof(BoxCollider2D)) as BoxCollider2D[];
+		foreach (BoxCollider2D collider in colliders) {
+			if (collider.gameObject.GetComponent<SpriteRenderer> ().sortingOrder > order_in_layer) {
+				//if (collider.IsTouching (this.gameObject.GetComponent<BoxCollider2D> ())) { not working?
+					order_in_layer = collider.gameObject.GetComponent<SpriteRenderer> ().sortingOrder + 1;
+				//}
+			}
+		}
+		RpcMoveToTop(order_in_layer);
+	}
+
+	[ClientRpc]
+	private void RpcMoveToTop (int order_in_layer) {
+		this.gameObject.GetComponent<SpriteRenderer> ().sortingOrder = order_in_layer;
+	}
 }

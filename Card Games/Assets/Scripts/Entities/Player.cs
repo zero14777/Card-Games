@@ -253,6 +253,7 @@ public class Player : NetworkBehaviour {
 
 	[Command]
 	public void CmdRelease () {
+		m_held_obj.GetComponent<Card> ().BringToTop ();
 		m_held_obj.m_held = false;
 		m_held_obj = null;
 	}
