@@ -244,9 +244,23 @@ public class Card : Draggable {
 		}
 	}
 
+	// Managing Sorting layer order for cards
+
+	private void OnCollisionEnter2D (Collision2D hit) {
+		Card hit_card = hit.gameObject.GetComponent<Card> ();
+		if (!(hit_card)) {
+			return;
+		} else if (m_held && !(hit_card.m_held)) {
+			int card_order = hit.gameObject.GetComponent<SpriteRenderer> ().sortingOrder;
+			if (card_order >= GetComponent<SpriteRenderer> ().sortingOrder) {
+				GetComponent<SpriteRenderer> ().sortingOrder = card_order + 1;
+			}
+		}
+	}
+
 	[ServerCallback]
 	public void BringToTop () {
-		int order_in_layer = gameObject.GetComponent<SpriteRenderer> ().sortingOrder;
+		int order_in_layer = GetComponent<SpriteRenderer> ().sortingOrder;
 		GameObject[] cards = GameObject.FindGameObjectsWithTag ("Card");
 		foreach (GameObject card in cards) {
 			if (GetComponent<Collider2D>().IsTouching (card.GetComponent<Collider2D> ())) {
