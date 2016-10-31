@@ -58,6 +58,9 @@ public class Card : Draggable {
 		if (isClient) {
 			transform.rotation = Quaternion.Euler (new Vector3 (0, 0, m_rotation));
 		}
+		if (isServer) {
+			Invoke ("BringToTop", 0.1f);
+		}
 	}
 
 	/// <summary>
@@ -241,14 +244,16 @@ public class Card : Draggable {
 		}
 	}
 
+	[ServerCallback]
 	public void BringToTop () {
-		int order_in_layer = 1;
-		BoxCollider2D[] colliders = FindObjectsOfType(typeof(BoxCollider2D)) as BoxCollider2D[];
-		foreach (BoxCollider2D collider in colliders) {
-			if (collider.gameObject.GetComponent<SpriteRenderer> ().sortingOrder > order_in_layer) {
-				//if (collider.IsTouching (this.gameObject.GetComponent<BoxCollider2D> ())) { not working?
-					order_in_layer = collider.gameObject.GetComponent<SpriteRenderer> ().sortingOrder + 1;
-				//}
+		int order_in_layer = gameObject.GetComponent<SpriteRenderer> ().sortingOrder;
+		GameObject[] cards = GameObject.FindGameObjectsWithTag ("Card");
+		foreach (GameObject card in cards) {
+			if (GetComponent<Collider2D>().IsTouching (card.GetComponent<Collider2D> ())) {
+				int card_order = card.GetComponent<SpriteRenderer> ().sortingOrder;
+				if (card_order >= order_in_layer) {
+					order_in_layer = card_order + 1;
+				}
 			}
 		}
 		RpcMoveToTop(order_in_layer);

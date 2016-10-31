@@ -1,17 +1,17 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Entities\PlayLog.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Entities\Player.cs">
     <Files>
-      <File FileName="Assets\Scripts\Entities\PlayLog.cs" Line="43" Column="69" />
-      <File FileName="Assets\Scripts\Entities\Player.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Entities\Card.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Entities\PlayLog.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Entities\Player.cs" Line="251" Column="17" />
       <File FileName="Assets\Scripts\Entities\Deck.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Entities\Token.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Classes\Draggable.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Classes\Draggable.cs" Line="17" Column="51" />
       <File FileName="Assets\Scripts\SaveFile.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Entities\UICard.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Classes\UIElement.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Entities\CardSpawner.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Entities\Card.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Menus and Buttons\ChangeScoreButton.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Managers\GameManager.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Entities\NewBehaviourScript.cs" Line="1" Column="1" />

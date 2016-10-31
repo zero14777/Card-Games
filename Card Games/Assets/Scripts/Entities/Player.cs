@@ -246,14 +246,16 @@ public class Player : NetworkBehaviour {
 	// Dragging & Dropping
 
 	[Command]
-	public void CmdGrab (GameObject card_obj) {
-		m_held_obj = card_obj.GetComponent<Draggable> ();
+	public void CmdGrab (GameObject drag_obj) {
+		m_held_obj = drag_obj.GetComponent<Draggable> ();
+		if (m_held_obj.GetType () == typeof(Card)) {
+			((Card) m_held_obj).BringToTop ();
+		}
 		m_held_obj.m_held = true;
 	}
 
 	[Command]
 	public void CmdRelease () {
-		m_held_obj.GetComponent<Card> ().BringToTop ();
 		m_held_obj.m_held = false;
 		m_held_obj = null;
 	}
