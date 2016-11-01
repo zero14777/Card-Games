@@ -4,14 +4,15 @@ using System.Collections;
 
 public class Draggable : NetworkBehaviour {
 
+	// Dragging & Dropping
+
+	//[SyncVar(hook="OnGrabOrRelease")]
 	[SyncVar]
 	public bool m_held;
 	protected bool m_holder;
 	[SyncVar]
 	public Vector3 m_drag_transform;
 	private int m_lerp_time = 15;
-
-	// Dragging & Dropping
 
 	protected virtual void OnMouseDown () {
 		if (!m_held && !GameManager.Instance.m_over_UI) {
@@ -36,6 +37,13 @@ public class Draggable : NetworkBehaviour {
 			Player.s_local_player.CmdDrag (drag_pos);
 			transform.position = drag_pos;
 		}
+	}
+
+	private void OnGrabOrRelease (bool held) {
+		DoOnGrabOrRelease (held);
+	}
+
+	protected virtual void DoOnGrabOrRelease (bool held) {
 	}
 
 	// Rotation

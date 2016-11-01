@@ -244,6 +244,23 @@ public class Card : Draggable {
 		}
 	}
 
+	protected override void DoOnGrabOrRelease (bool held) {
+		if (held) {
+			int order_in_layer = GetComponent<SpriteRenderer> ().sortingOrder;
+			GameObject[] cards = GameObject.FindGameObjectsWithTag ("Card");
+			foreach (GameObject card in cards) {
+				if (GetComponent<Collider2D>().IsTouching (card.GetComponent<Collider2D> ())) {
+					int card_order = card.GetComponent<SpriteRenderer> ().sortingOrder;
+					if (card_order >= order_in_layer) {
+						order_in_layer = card_order + 1;
+					}
+				}
+			}
+			transform.position = new Vector3 (transform.position.x, transform.position.y, -0.0000000000001f * order_in_layer);
+			this.gameObject.GetComponent<SpriteRenderer> ().sortingOrder = order_in_layer;
+		}
+	}
+
 	// Managing Sorting layer order for cards
 
 	private void OnCollisionEnter2D (Collision2D hit) {
@@ -270,6 +287,7 @@ public class Card : Draggable {
 				}
 			}
 		}
+		transform.position = new Vector3 (transform.position.x, transform.position.y, -0.0000000000001f * order_in_layer);
 		RpcMoveToTop(order_in_layer);
 	}
 
