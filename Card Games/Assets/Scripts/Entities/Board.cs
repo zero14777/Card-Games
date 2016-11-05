@@ -23,7 +23,9 @@ public class Board : MonoBehaviour {
 		m_drag_point = Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, Camera.main.transform.position.z * -1));
 		m_drag_point.z = 0;
 		m_camera_orig = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, Camera.main.transform.position.z);
-		m_dragging = true;
+		if (!GameManager.Instance.m_over_UI) {
+			m_dragging = true;
+		}
 	}
 
 	void OnMouseUp () {

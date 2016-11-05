@@ -1,21 +1,23 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Entities\Player.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Resources\Highlighted Outline.shader">
     <Files>
-      <File FileName="Assets\Scripts\Classes\Draggable.cs" Line="10" Column="2" />
-      <File FileName="Assets\Scripts\Entities\Player.cs" Line="253" Column="3" />
-      <File FileName="Assets\Scripts\Entities\Card.cs" Line="248" Column="7" />
+      <File FileName="Assets\Scripts\Entities\Board.cs" Line="28" Column="4" />
+      <File FileName="Assets\Scripts\Classes\Draggable.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Entities\Player.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Entities\Card.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Entities\PlayLog.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Entities\Deck.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Entities\Token.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\SaveFile.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Entities\UICard.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Classes\UIElement.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Entities\CardSpawner.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Menus and Buttons\ChangeScoreButton.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Classes\UIElement.cs" Line="6" Column="23" />
+      <File FileName="Assets\Scripts\Entities\CardSpawner.cs" Line="14" Column="1" />
+      <File FileName="Assets\Scripts\Menus and Buttons\ChangeScoreButton.cs" Line="4" Column="43" />
       <File FileName="Assets\Scripts\Managers\GameManager.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Entities\NewBehaviourScript.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Menus and Buttons\MainMenu.cs" Line="1" Column="1" />
+      <File FileName="Assets\Resources\Highlighted Outline.shader" Line="49" Column="74" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
