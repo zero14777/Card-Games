@@ -47,6 +47,7 @@ public class GameManager : NetworkBehaviour {
 
 		foreach (FileInfo file in png_files) {
 			GameObject new_card_spawner = Instantiate (card_spawner_prefab);
+			new_card_spawner.name = file.Name + "Spawner";
 			new_card_spawner.transform.SetParent(card_spawner_menu.transform);
 			byte[] bytes = System.IO.File.ReadAllBytes (Application.dataPath + "/../Cards/" + file.Name);
 			new_card_spawner.GetComponent<Image> ().sprite = Card.GenerateSprite (bytes);

@@ -53,9 +53,9 @@ public class Player : NetworkBehaviour {
 	}
 
 	[Command]
-	public void CmdCreateCard (string card) {
+	public void CmdCreateCard (string card, float drop_rotation) {
 		m_hand.Remove (card);
-		Card.CreateNewCard (card, true);
+		Card.CreateNewCard (card, true, 0, 0, drop_rotation);
 		PlayLog.Instance.LogEvent (m_player_name + " added a " + Card.FormatName (card) + " card to the game.");
 	}
 

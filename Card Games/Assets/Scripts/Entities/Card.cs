@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ public class Card : Draggable {
 		Card card_component = new_card.GetComponent<Card> ();
 		card_component.m_filename = file_name;
 		card_component.LoadFront ();
+		//card_component.m_front = GameObject.Find(file_name + "Spawner").GetComponent<Image> ().sprite;
 		card_component.m_rotation = rotation;
 		card_component.m_upright = upright;
 		NetworkServer.Spawn (new_card);
@@ -42,10 +44,11 @@ public class Card : Draggable {
 		m_sprite_component = this.GetComponent<SpriteRenderer> ();
 		EventFlip = new UnityEngine.Events.UnityAction (FlipEvent);
 		m_normal_size = new Vector3 (0.75f, 0.75f, 1);
-		m_blowup_size = new Vector3 (1, 1, 1);
+		m_blowup_size = new Vector3 (1.5f, 1.5f, 1);
 		if (isClient) {
 			if (File.Exists (Application.dataPath + "/../Cards/" + m_filename)) {
 				LoadFront ();
+				//m_front = GameObject.Find(m_filename + "Spawner").GetComponent<Image> ().sprite;
 			} else {
 				m_front = Resources.Load<Sprite> ("Missing_Data");
 			}
